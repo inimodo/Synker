@@ -16,6 +16,7 @@ namespace Synker
     {
 
         public static string Path { get { return "C:\\Users\\" + Environment.UserName + "\\Synker\\"; } }
+        public static string PrePath { get { return "C:\\Users\\" + Environment.UserName; } }
         public static bool FirstTime()
         {
             if (Directory.Exists(Path))

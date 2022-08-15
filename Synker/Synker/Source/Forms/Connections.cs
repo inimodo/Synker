@@ -26,9 +26,11 @@ namespace Synker
             this.Location = new Point(
                 Screen.PrimaryScreen.WorkingArea.Width - this.Width,
                 Screen.PrimaryScreen.WorkingArea.Height - this.Height);
+
+            Synchronization.CallbackToMain += CatchCallback;
+
             if (FTP.Default.connected)
             {
-                Synchronization.CallbackToMain += CatchCallback;
                 Synchronization.Initialize();
             }
         }
