@@ -52,7 +52,8 @@
   </PropertyGroup>
   <PropertyGroup />
   <PropertyGroup>
-    <ApplicationIcon>Resources\Logo.ico</ApplicationIcon>
+    <ApplicationIcon>
+    </ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <SignManifests>false</SignManifests>
@@ -149,7 +150,10 @@
     <None Include="Source\Misc\App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\Logo.ico" />
+    <None Include="Resources\Download.ico" />
+    <None Include="Resources\Error.ico" />
+    <None Include="Resources\Logo.ico" />
+    <None Include="Resources\Okay.ico" />
     <None Include="Resources\Logo.png" />
     <None Include="Resources\Close.png" />
   </ItemGroup>
@@ -164,6 +168,24 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Upload.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Download.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Upload.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Quit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Error.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Okay.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

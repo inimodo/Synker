@@ -40,6 +40,8 @@
             this.eInstallpathLabel = new System.Windows.Forms.Label();
             this.eLinkLabel = new System.Windows.Forms.LinkLabel();
             this.eHelpLabel = new System.Windows.Forms.Label();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // edesktopicoLabel
@@ -48,7 +50,7 @@
             this.edesktopicoLabel.BackColor = System.Drawing.Color.Transparent;
             this.edesktopicoLabel.Font = new System.Drawing.Font("Bahnschrift Condensed", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.edesktopicoLabel.ForeColor = System.Drawing.Color.White;
-            this.edesktopicoLabel.Location = new System.Drawing.Point(12, 40);
+            this.edesktopicoLabel.Location = new System.Drawing.Point(16, 41);
             this.edesktopicoLabel.Name = "edesktopicoLabel";
             this.edesktopicoLabel.Size = new System.Drawing.Size(158, 18);
             this.edesktopicoLabel.TabIndex = 2;
@@ -60,7 +62,7 @@
             this.eStatusLabel.BackColor = System.Drawing.Color.Transparent;
             this.eStatusLabel.Font = new System.Drawing.Font("Bahnschrift Condensed", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.eStatusLabel.ForeColor = System.Drawing.Color.White;
-            this.eStatusLabel.Location = new System.Drawing.Point(43, 12);
+            this.eStatusLabel.Location = new System.Drawing.Point(47, 13);
             this.eStatusLabel.Name = "eStatusLabel";
             this.eStatusLabel.Size = new System.Drawing.Size(94, 23);
             this.eStatusLabel.TabIndex = 14;
@@ -76,7 +78,7 @@
             this.eLogo.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.eLogo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.eLogo.ForeColor = System.Drawing.Color.Transparent;
-            this.eLogo.Location = new System.Drawing.Point(12, 12);
+            this.eLogo.Location = new System.Drawing.Point(16, 13);
             this.eLogo.Name = "eLogo";
             this.eLogo.Size = new System.Drawing.Size(25, 25);
             this.eLogo.TabIndex = 13;
@@ -89,7 +91,7 @@
             this.eDesktopicoToggle.CheckState = System.Windows.Forms.CheckState.Checked;
             this.eDesktopicoToggle.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.eDesktopicoToggle.Font = new System.Drawing.Font("Bahnschrift Light Condensed", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.eDesktopicoToggle.Location = new System.Drawing.Point(15, 61);
+            this.eDesktopicoToggle.Location = new System.Drawing.Point(19, 62);
             this.eDesktopicoToggle.Name = "eDesktopicoToggle";
             this.eDesktopicoToggle.Size = new System.Drawing.Size(109, 20);
             this.eDesktopicoToggle.TabIndex = 15;
@@ -103,7 +105,7 @@
             this.eWinexToggle.CheckState = System.Windows.Forms.CheckState.Checked;
             this.eWinexToggle.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.eWinexToggle.Font = new System.Drawing.Font("Bahnschrift Light Condensed", 9.75F);
-            this.eWinexToggle.Location = new System.Drawing.Point(15, 109);
+            this.eWinexToggle.Location = new System.Drawing.Point(19, 110);
             this.eWinexToggle.Name = "eWinexToggle";
             this.eWinexToggle.Size = new System.Drawing.Size(161, 20);
             this.eWinexToggle.TabIndex = 15;
@@ -116,7 +118,7 @@
             this.eWinexLabel.BackColor = System.Drawing.Color.Transparent;
             this.eWinexLabel.Font = new System.Drawing.Font("Bahnschrift Condensed", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.eWinexLabel.ForeColor = System.Drawing.Color.White;
-            this.eWinexLabel.Location = new System.Drawing.Point(12, 88);
+            this.eWinexLabel.Location = new System.Drawing.Point(16, 89);
             this.eWinexLabel.Name = "eWinexLabel";
             this.eWinexLabel.Size = new System.Drawing.Size(358, 18);
             this.eWinexLabel.TabIndex = 2;
@@ -130,7 +132,7 @@
             this.eDisconnectButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.eDisconnectButton.Font = new System.Drawing.Font("Bahnschrift Light Condensed", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.eDisconnectButton.ForeColor = System.Drawing.Color.White;
-            this.eDisconnectButton.Location = new System.Drawing.Point(291, 139);
+            this.eDisconnectButton.Location = new System.Drawing.Point(286, 140);
             this.eDisconnectButton.Name = "eDisconnectButton";
             this.eDisconnectButton.Size = new System.Drawing.Size(100, 24);
             this.eDisconnectButton.TabIndex = 16;
@@ -146,7 +148,7 @@
             this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button1.Font = new System.Drawing.Font("Bahnschrift Light Condensed", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button1.ForeColor = System.Drawing.Color.White;
-            this.button1.Location = new System.Drawing.Point(185, 139);
+            this.button1.Location = new System.Drawing.Point(180, 140);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(100, 24);
             this.button1.TabIndex = 16;
@@ -160,7 +162,7 @@
             this.eInstallpathLabel.BackColor = System.Drawing.Color.Transparent;
             this.eInstallpathLabel.Font = new System.Drawing.Font("Bahnschrift Light Condensed", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.eInstallpathLabel.ForeColor = System.Drawing.Color.White;
-            this.eInstallpathLabel.Location = new System.Drawing.Point(135, 22);
+            this.eInstallpathLabel.Location = new System.Drawing.Point(139, 23);
             this.eInstallpathLabel.Name = "eInstallpathLabel";
             this.eInstallpathLabel.Size = new System.Drawing.Size(7, 13);
             this.eInstallpathLabel.TabIndex = 17;
@@ -169,7 +171,7 @@
             // eLinkLabel
             // 
             this.eLinkLabel.AutoSize = true;
-            this.eLinkLabel.Location = new System.Drawing.Point(12, 150);
+            this.eLinkLabel.Location = new System.Drawing.Point(16, 151);
             this.eLinkLabel.Name = "eLinkLabel";
             this.eLinkLabel.Size = new System.Drawing.Size(112, 13);
             this.eLinkLabel.TabIndex = 18;
@@ -183,37 +185,47 @@
             this.eHelpLabel.BackColor = System.Drawing.Color.Transparent;
             this.eHelpLabel.Font = new System.Drawing.Font("Bahnschrift Light Condensed", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.eHelpLabel.ForeColor = System.Drawing.Color.White;
-            this.eHelpLabel.Location = new System.Drawing.Point(12, 136);
+            this.eHelpLabel.Location = new System.Drawing.Point(16, 137);
             this.eHelpLabel.Name = "eHelpLabel";
             this.eHelpLabel.Size = new System.Drawing.Size(92, 14);
             this.eHelpLabel.TabIndex = 19;
             this.eHelpLabel.Text = "For help please vistit:";
             // 
+            // panel1
+            // 
+            this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(24)))), ((int)(((byte)(26)))));
+            this.panel1.Controls.Add(this.eStatusLabel);
+            this.panel1.Controls.Add(this.eHelpLabel);
+            this.panel1.Controls.Add(this.edesktopicoLabel);
+            this.panel1.Controls.Add(this.eLinkLabel);
+            this.panel1.Controls.Add(this.eWinexLabel);
+            this.panel1.Controls.Add(this.eInstallpathLabel);
+            this.panel1.Controls.Add(this.eLogo);
+            this.panel1.Controls.Add(this.button1);
+            this.panel1.Controls.Add(this.eDesktopicoToggle);
+            this.panel1.Controls.Add(this.eDisconnectButton);
+            this.panel1.Controls.Add(this.eWinexToggle);
+            this.panel1.Location = new System.Drawing.Point(1, 1);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(400, 180);
+            this.panel1.TabIndex = 20;
+            // 
             // Installdialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(24)))), ((int)(((byte)(26)))));
-            this.ClientSize = new System.Drawing.Size(403, 178);
-            this.Controls.Add(this.eHelpLabel);
-            this.Controls.Add(this.eLinkLabel);
-            this.Controls.Add(this.eInstallpathLabel);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.eDisconnectButton);
-            this.Controls.Add(this.eWinexToggle);
-            this.Controls.Add(this.eDesktopicoToggle);
-            this.Controls.Add(this.eStatusLabel);
-            this.Controls.Add(this.eLogo);
-            this.Controls.Add(this.eWinexLabel);
-            this.Controls.Add(this.edesktopicoLabel);
+            this.BackColor = System.Drawing.Color.White;
+            this.ClientSize = new System.Drawing.Size(402, 182);
+            this.Controls.Add(this.panel1);
             this.ForeColor = System.Drawing.Color.White;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Installdialog";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "s";
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -230,5 +242,6 @@
         private System.Windows.Forms.Label eInstallpathLabel;
         private System.Windows.Forms.LinkLabel eLinkLabel;
         private System.Windows.Forms.Label eHelpLabel;
+        private System.Windows.Forms.Panel panel1;
     }
 }
