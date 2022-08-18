@@ -19,11 +19,12 @@ namespace Synker
     public partial class Connections : Form
     {
         private ContextMenuStrip o_Menu = new ContextMenuStrip();
+        private Loaddialog Logger = new Loaddialog();
         public Connections()
         {
             InitializeComponent();
-
-            Synchronization.CallbackToMain += Message;
+            Synchronization.Message += Message;
+            Synchronization.Log += Logger.Log;
 
             eSynkerMenu.ContextMenuStrip = new ContextMenuStrip();
             eSynkerMenu.ContextMenuStrip.Items.Add("Synker", Synker.Properties.Resources.Logo, new EventHandler(Show));
@@ -52,43 +53,47 @@ namespace Synker
                 eSynkerMenu.ContextMenuStrip.Items[1].Text = "Disable Autopush";
             }
         }
-        private void ForcePull(object o_Sender, EventArgs o_Args)
+        private async void ForcePull(object o_Sender, EventArgs o_Args)
         {
-            int i_Trys;
-            if (Synchronization.UpdateListing(out i_Trys))
-            {
-                if (Synchronization.Pull(out i_Trys))
+            Logger.Show();
+            await Task.Run(() => {
+                if (Synchronization.UpdateListing())
                 {
-                    Message("Force Pull", "Download was successful after " + i_Trys + " attempt(s).", false);
+                    if (Synchronization.ForcePull())
+                    {
+                        Message("Force Pull", "Download was successful!", false);
+                    }
+                    else
+                    {
+                        Message("Force Pull failed", "Download failed: " + Synchronization.LastError.GetType(), true);
+                    }
                 }
                 else
                 {
-                    Message("Force Pull failed", "Download failed: " + Synchronization.LastError.GetType(), true);
+                    Message("Listing failed ", "Listing failed: " + Synchronization.LastError.GetType(), true);
                 }
-            }
-            else
-            {
-                Message("Listing failed ", "Listing failed: " + Synchronization.LastError.GetType(), true);
-            }
+            });
         }
-        private void ForcePush(object o_Sender, EventArgs o_Args)
+        private async void ForcePush(object o_Sender, EventArgs o_Args)
         {
-            int i_Trys;
-            if (Synchronization.UpdateListing(out i_Trys))
-            {
-                if (Synchronization.Push(out i_Trys))
+            Logger.Show();
+            await Task.Run(() => {
+                if (Synchronization.UpdateListing())
                 {
-                    Message("Force Push", "Upload was successful after "+i_Trys+" attempt(s).", false);
+                    if (Synchronization.ForcePush())
+                    {
+                        Message("Force Push", "Upload was successful!", false);
+                    }
+                    else
+                    {
+                        Message("Force Push", "Upload failed: " + Synchronization.LastError.GetType(), true);
+                    }
                 }
                 else
                 {
-                    Message("Force Push", "Upload failed: "+Synchronization.LastError.GetType(), true);
+                    Message("Listing failed ", "Listing failed: " + Synchronization.LastError.GetType(), true);
                 }
-            }
-            else
-            {
-                Message("Listing failed ", "Listing failed: " + Synchronization.LastError.GetType(), true);
-            }
+            });
         }
 
         private void Close(object o_Sender, EventArgs o_Args)
@@ -185,16 +190,6 @@ namespace Synker
         {
             this.Show();
         }
-        private void OpenMenu(object o_Sender, MouseEventArgs o_Args)
-        {
-            if (o_Args.Button == MouseButtons.Left)
-            {
-                this.Show();
-            }
-            else if (o_Args.Button == MouseButtons.Right) {
 
-            }
-
-        }
     }
 }

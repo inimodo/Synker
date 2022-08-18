@@ -24,6 +24,13 @@ namespace Synker
         private void Finish(object sender, EventArgs e)
         {
             b_Success = true;
+            if (!Management.CreateFolder())
+            {
+                b_Success = false;
+                MessageBox.Show("Something went wrong whilst creating the working directory! Closing", "Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                this.Close();
+                return;
+            }
             if (eDesktopicoToggle.Checked)
             {
                 if (!Management.CreateDesktopIscon())
@@ -38,11 +45,7 @@ namespace Synker
                     MessageBox.Show("Something went wrong whilst creating the 'Windows Explorer' link! Continuing", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-            if (!Management.CreateFolder())
-            {
-                b_Success = false;
-                MessageBox.Show("Something went wrong whilst creating the working directory! Closing", "Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+  
             this.Close();
         }
 

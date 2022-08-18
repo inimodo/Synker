@@ -14,6 +14,7 @@ namespace Synker
         {
             using (WindowsIdentity o_thisid = WindowsIdentity.GetCurrent())
             {
+
                 WindowsPrincipal o_Principal = new WindowsPrincipal(o_thisid);
                 if (o_Principal.IsInRole(WindowsBuiltInRole.Administrator))
                 {

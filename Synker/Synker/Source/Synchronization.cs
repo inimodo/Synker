@@ -5,10 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Threading;
+using System.Net;
 
 //Using: https://www.nuget.org/packages/System.Net.FtpClient/
 using System.Net.FtpClient;
-using System.Net;
 
 namespace Synker
 {
@@ -26,7 +26,11 @@ namespace Synker
     public static class Synchronization
     {
         public delegate void Callback(string s_Title, string s_Message, bool b_isError);
-        public static event Callback CallbackToMain;
+        public static event Callback Message;
+
+        public delegate void Logging(string s_Message, bool b_Nobreak = false, bool b_Nodate = false, int i_Status = 0);
+        public static event Logging Log;
+
 
         private static Thread o_Thread;
 
@@ -35,7 +39,6 @@ namespace Synker
 
         private static FtpClient o_Connection;
 
-        private readonly static string Dir = "Synker";
 
         private static FileSystemWatcher o_Watcher;
 
@@ -45,29 +48,6 @@ namespace Synker
 
         public static bool Initialize()
         {
-            o_Connection = new FtpClient();
-            o_Connection.Host = FTP.Default.server;
-            o_Connection.Credentials = new NetworkCredential(FTP.Default.user, Credentials.Security.Decrypt(FTP.Default.password));
-            o_Connection.SocketKeepAlive = true;
-            o_Connection.DataConnectionType = FtpDataConnectionType.EPSV;
-            o_Connection.EnableThreadSafeDataConnections = true;
-            o_Connection.ConnectTimeout = 30000;
-            o_Connection.DataConnectionReadTimeout = 30000;
-            o_Connection.DataConnectionConnectTimeout = 30000;
-            o_Connection.SocketPollInterval = 3000;
-
-            try
-            {
-                o_Connection.Connect();
-                if (!o_Connection.IsConnected) return false ;
-            }
-            catch (Exception) { return false; }
-
-            if (!o_Connection.DirectoryExists(Dir))
-            {
-                o_Connection.CreateDirectory(Dir);
-            }
-
             o_Watcher = new FileSystemWatcher(Management.Path);
             o_Watcher.NotifyFilter = NotifyFilters.Attributes| NotifyFilters.CreationTime| NotifyFilters.DirectoryName| NotifyFilters.FileName
                                  | NotifyFilters.LastAccess| NotifyFilters.LastWrite| NotifyFilters.Security| NotifyFilters.Size;
@@ -79,250 +59,251 @@ namespace Synker
             o_Watcher.Renamed += Action.Rename;
 
             o_Thread = new Thread(new ThreadStart(PushCycle));
+
+            return OpenConnection();
+        }
+        public static bool OpenConnection()
+        {
+            o_Connection = new FtpClient();
+            o_Connection.Host = FTP.Default.server;
+            o_Connection.Credentials = new NetworkCredential(FTP.Default.user, Credentials.Security.Decrypt(FTP.Default.password));
+            o_Connection.SocketKeepAlive = true;
+            o_Connection.DataConnectionType = FtpDataConnectionType.EPSV;
+            o_Connection.EnableThreadSafeDataConnections = true;
+            o_Connection.ConnectTimeout = 30000;
+            o_Connection.DataConnectionReadTimeout = 30000;
+            o_Connection.DataConnectionConnectTimeout = 30000;
+            o_Connection.SocketPollInterval = 30000;
+
+            try
+            {
+                o_Connection.Connect();
+                if (!o_Connection.IsConnected) return false;
+            }
+            catch (Exception) { return false; }
+
+            if (!o_Connection.DirectoryExists(Management.Name))
+            {
+                o_Connection.CreateDirectory(Management.Name);
+            }
             return true;
         }
-        public static void StartSync() => o_Thread.Start();
-        public static void StopSync() => o_Thread.Abort();
-        private static void PushCycle()
+
+        private static class Base
         {
-            Callback Message = CallbackToMain;
-            Message("Autopush Enabled", "Automatic Synchronization Enabled.", false);
-            while (FTP.Default.connected)
+            public static bool DeleteOnLocal(FileObj s_Source)
             {
-                if (Action.Changed)
+                try
                 {
-                    int i_Trys;
-                    if (UpdateListing(out i_Trys))
+                    if (s_Source.b_Folder)
                     {
-                        if (Push(out i_Trys))
+                        if (Directory.Exists(Management.PrePath + s_Source.s_File))
                         {
-                            Message("Push", "Upload was successful after " + i_Trys + " attempt(s).", false);
-                        }
-                        else
-                        {
-                            Message("Push", "Upload failed: " + LastError.GetType(), true);
+                            Directory.Delete(Management.PrePath + s_Source.s_File, true);
                         }
                     }
                     else
                     {
-                        Message("Listing failed ", "Listing failed: " + LastError.GetType(), true);
-                    }
-                    Action.Changed = false;
-                }
-                Thread.Sleep(5*60*1000);
-            }
-        }
-        private static class Action
-        {
-            public static bool Changed = false;
-            public static void Change(object o_Sender, FileSystemEventArgs o_Args) => Changed = true;
-            public static void Create(object o_Sender, FileSystemEventArgs o_Args) => Changed = true;
-            public static void Delete(object o_Sender, FileSystemEventArgs o_Args) => Changed = true;
-            public static void Rename(object o_Sender, RenamedEventArgs o_Args) => Changed = true;
-        }
-        
-        private static bool DeleteLocal(FileObj s_Source)
-        {
-            try
-            {
-                if (s_Source.b_Folder)
-                {
-                    if (Directory.Exists(Management.PrePath + s_Source.s_File))
-                    {
-                        Directory.Delete(Management.PrePath + s_Source.s_File, true);
+                        if (File.Exists(Management.PrePath + s_Source.s_File))
+                        {
+                            File.Delete(Management.PrePath + s_Source.s_File);
+                        }
                     }
                 }
-                else
+                catch (Exception e_Info)
                 {
-                    if (File.Exists(Management.PrePath + s_Source.s_File))
-                    {
-                        File.Delete(Management.PrePath + s_Source.s_File);
-                    }
+                    e_Error = e_Info;
+                    return false;
                 }
-            }
-            catch (Exception e_Info)
-            {
-                e_Error = e_Info;
-                return false;
-            }
-
-            return true;
-
-        }
-        private static bool DeleteServer(FileObj s_Source)
-        {
-            try { 
-                if (s_Source.b_Folder)
-                {
-                    if (o_Connection.DirectoryExists(s_Source.s_File.Replace("\\", "/")))
-                    {
-                        o_Connection.DeleteDirectory(s_Source.s_File.Replace("\\", "/"),true);
-                    }
-                } else
-                {
-                    if (o_Connection.FileExists(s_Source.s_File.Replace("\\", "/")))
-                    {
-                        o_Connection.DeleteFile(s_Source.s_File.Replace("\\", "/"));
-                    }
-                }
-            }
-            catch (Exception e_Info)
-            {
-                e_Error = e_Info;
-                return false; 
-            }
-            return true;
-        }
-        private static bool DownloadFile(FileObj s_Source)
-        {
-            try
-            {
-                if (s_Source.b_Folder)
-                {
-                    if (!Directory.Exists(Management.PrePath + s_Source.s_File))
-                    {
-                        Directory.CreateDirectory(Management.PrePath + s_Source.s_File);
-                    }
-                }
-                else
-                {
-                    Stream o_SourceFile = File.OpenWrite(Management.PrePath + s_Source.s_File);
-                    using (Stream o_DestinyStream = o_Connection.OpenRead(s_Source.s_File.Replace("\\", "/")))
-                    {
-                        o_DestinyStream.CopyTo(o_SourceFile);
-                        o_DestinyStream.Close();
-                        o_DestinyStream.Dispose();
-                    }
-                    o_SourceFile.Close();
-                    o_SourceFile.Dispose();
-                }
-            }
-            catch (Exception e_Info)
-            {
-                e_Error = e_Info;
-                return false;
-            }
 
 
-            return true;
-
-        }
-        private static bool UploadFile(FileObj s_Source)
-        {
-            try
+                return true;
+            }
+            public static bool DeleteFromServer(FileObj s_Source)
             {
-                if (s_Source.b_Folder)
+                try
                 {
-                    o_Connection.CreateDirectory(s_Source.s_File.Replace("\\", "/"));
-                }
-                else
-                {
-                    Stream o_SourceFile = File.OpenRead(Management.PrePath + s_Source.s_File);
-                    using (Stream o_DestinyStream = o_Connection.OpenWrite(s_Source.s_File.Replace("\\", "/"),FtpDataType.Binary))
+                    if (s_Source.b_Folder)
                     {
+                        if (o_Connection.DirectoryExists(s_Source.s_File.Replace("\\", "/")))
+                        {
+                            o_Connection.DeleteDirectory(s_Source.s_File.Replace("\\", "/"), true);
+                        }
+                    }
+                    else
+                    {
+                        if (o_Connection.FileExists(s_Source.s_File.Replace("\\", "/")))
+                        {
+                            o_Connection.DeleteFile(s_Source.s_File.Replace("\\", "/"));
+                        }
+                    }
+                }
+                catch (Exception e_Info)
+                {
+                    e_Error = e_Info;
+                    return false;
+                }
 
-                        o_SourceFile.CopyTo(o_DestinyStream);
+                return true;
+            }
+            public static bool DownloadFile(FileObj s_Source)
+            {
+                try
+                {
+                    if (s_Source.b_Folder)
+                    {
+                        if (!Directory.Exists(Management.PrePath + s_Source.s_File))
+                        {
+                            Directory.CreateDirectory(Management.PrePath + s_Source.s_File);
+                        }
+                    }
+                    else
+                    {
+                        Stream o_SourceFile = File.OpenWrite(Management.PrePath + s_Source.s_File);
+                        using (Stream o_DestinyStream = o_Connection.OpenRead(s_Source.s_File.Replace("\\", "/")))
+                        {
+                            o_DestinyStream.CopyTo(o_SourceFile);
+                            o_DestinyStream.Close();
+                            o_DestinyStream.Dispose();
+                        }
                         o_SourceFile.Close();
                         o_SourceFile.Dispose();
                     }
-                    o_SourceFile.Close();
-                    o_SourceFile.Dispose();
                 }
+                catch (Exception e_Info)
+                {
+                    e_Error = e_Info;
+                    return false;
+                }
+
+                return true;
+
             }
-            catch (Exception e_Info)
+
+            public static bool UploadFile(FileObj s_Source)
             {
-                e_Error = e_Info;
+                try
+                {
+                    if (s_Source.b_Folder)
+                    {
+                        o_Connection.CreateDirectory(s_Source.s_File.Replace("\\", "/"));
+                    }
+                    else
+                    {
+                        Stream o_SourceFile = File.OpenRead(Management.PrePath + s_Source.s_File);
+                        using (Stream o_DestinyStream = o_Connection.OpenWrite(s_Source.s_File.Replace("\\", "/"), FtpDataType.Binary))
+                        {
+
+                            o_SourceFile.CopyTo(o_DestinyStream);
+                            o_SourceFile.Close();
+                            o_SourceFile.Dispose();
+                        }
+                        o_SourceFile.Close();
+                        o_SourceFile.Dispose();
+                    }
+                }
+                catch (Exception e_Info)
+                {
+                    e_Error = e_Info;
+
+                    return false;
+                }
+                return true;
+            }
+            public static FileObj[] FetchServer()
+            {
+                List<FileObj> s_Files = new List<FileObj>();
+
+                FileObj[] InternalFetch(string s_Folder)
+                {
+                    List<FileObj> s_InternalFiles = new List<FileObj>();
+                    foreach (FtpListItem o_Item in o_Connection.GetListing(s_Folder))
+                    {
+                        s_InternalFiles.Add(new FileObj(o_Item.FullName.Replace("/", "\\"), o_Item.Modified, o_Item.Type == FtpFileSystemObjectType.Directory));
+
+                        if (o_Item.Type == FtpFileSystemObjectType.Directory)
+                        {
+                            s_InternalFiles.AddRange(InternalFetch(o_Item.FullName));
+                        }
+                    }
+                    return s_InternalFiles.ToArray();
+                }
+
+                try
+                {
+                    foreach (FtpListItem o_Item in o_Connection.GetListing())
+                    {
+                        if (o_Item.Name == Management.Name)
+                        {
+                            s_Files.Add(new FileObj("\\" + o_Item.Name, o_Item.Modified, true));
+                        }
+                    }
+
+                    o_Connection.SetWorkingDirectory(Management.Name);
+
+                    foreach (FtpListItem o_Item in o_Connection.GetListing())
+                    {
+                        s_Files.Add(new FileObj(o_Item.FullName.Replace("/", "\\"), o_Item.Modified, o_Item.Type == FtpFileSystemObjectType.Directory));
+                        if (o_Item.Type == FtpFileSystemObjectType.Directory)
+                        {
+                            s_Files.AddRange(InternalFetch(o_Item.FullName));
+                        }
+                    }
+
+                    o_Connection.SetWorkingDirectory("../");
+                }
+                catch (Exception e_Info)
+                {
+                    e_Error = e_Info;
+                    return null;
+                }
+
+                return s_Files.ToArray();
+            }
+            public static FileObj[] FetchLocal()
+            {
+                string[] s_Files = Directory.GetFileSystemEntries(Management.Path, "*", SearchOption.AllDirectories);
+                List<FileObj> o_Files = new List<FileObj>();
+
+                FileInfo o_Info = new FileInfo(Management.Path);
+                o_Files.Add(new FileObj("\\Synker", o_Info.LastWriteTime, true));
+                for (int i_Index = 0; i_Index < s_Files.Length; i_Index++)
+                {
+                    o_Info = new FileInfo(s_Files[i_Index]);
+                    if (!o_Info.Attributes.HasFlag(FileAttributes.Hidden))
+                    {
+                        o_Files.Add(new FileObj("\\Synker\\" + s_Files[i_Index].Remove(0, Management.Path.Length), o_Info.LastWriteTime, Directory.Exists(s_Files[i_Index])));
+                    }
+                }
+                return o_Files.ToArray();
+            }
+
+            public static bool FetchData()
+            {
+                FileObj[] s_ServerTemp = FetchServer();
+                FileObj[] s_LocalTemp = FetchLocal();
+                if (s_LocalTemp != null && s_ServerTemp != null)
+                {
+                    s_Local = s_LocalTemp;
+                    s_Server = s_ServerTemp;
+                    return true;
+                }
                 return false;
-            }            
-            return true;
+            }
         }
-        private static FileObj[] FetchServer()
-        {
-            List<FileObj> s_Files = new List<FileObj>();
-
-            FileObj[] InternalFetch(string s_Folder)
-            {
-                List<FileObj> s_InternalFiles = new List<FileObj>();
-                foreach (FtpListItem o_Item in o_Connection.GetListing(s_Folder))
-                {
-                    s_InternalFiles.Add(new FileObj(o_Item.FullName.Replace("/", "\\"), o_Item.Modified, o_Item.Type == FtpFileSystemObjectType.Directory));
-
-                    if (o_Item.Type == FtpFileSystemObjectType.Directory)
-                    {
-                        s_InternalFiles.AddRange(InternalFetch(o_Item.FullName));
-                    }
-                }
-                return s_InternalFiles.ToArray();
-            }
-
-            try
-            {
-                foreach (FtpListItem o_Item in o_Connection.GetListing())
-                {
-                    if (o_Item.Name == Dir)
-                    {
-                        s_Files.Add(new FileObj("\\" + o_Item.Name, o_Item.Modified, true));
-                    }
-                }
-
-                o_Connection.SetWorkingDirectory(Dir);
-
-                foreach (FtpListItem o_Item in o_Connection.GetListing())
-                {
-                    s_Files.Add(new FileObj(o_Item.FullName.Replace("/", "\\"), o_Item.Modified, o_Item.Type == FtpFileSystemObjectType.Directory));
-                    if (o_Item.Type == FtpFileSystemObjectType.Directory)
-                    {
-                        s_Files.AddRange(InternalFetch(o_Item.FullName));
-                    }
-                }
-
-                o_Connection.SetWorkingDirectory("../");
-            }
-            catch (Exception e_Info)
-            {
-                e_Error = e_Info;
-                return null;
-            }
-
-            return s_Files.ToArray();
-        }
-        private static FileObj[] FetchLocal()
-        {
-            string[] s_Files = Directory.GetFileSystemEntries(Management.Path, "*", SearchOption.AllDirectories);
-            List<FileObj> o_Files = new List<FileObj>();
-
-            FileInfo o_Info = new FileInfo(Management.Path);
-            o_Files.Add(new FileObj("\\Synker" ,o_Info.LastWriteTime,true));
-            for (int i_Index = 0; i_Index < s_Files.Length; i_Index++)
-            {
-                o_Info = new FileInfo(s_Files[i_Index]);
-                if (!o_Info.Attributes.HasFlag(FileAttributes.Hidden))
-                {
-                    o_Files.Add(new FileObj("\\Synker\\" + s_Files[i_Index].Remove(0, Management.Path.Length), o_Info.LastWriteTime, Directory.Exists(s_Files[i_Index])));
-                }
-            }
-            return o_Files.ToArray();
-        }
-        public static bool Pull(out int i_Trys)
-        {
-            for (i_Trys = 1; i_Trys < 4; i_Trys++)
-            {
-                if (ForcePull() == true) return true;
-                Thread.Sleep(500);
-            }
-            return false;
-        }
-        private static bool ForcePull()
+        public static bool Pull()
         {
             // Checks if a file is present on server: if false delete it because it is no longer needed
 
             if (s_Server.Length != 1)
             {
+                Thread.Sleep(100);
                 for (int i_LocalIndex = 1; i_LocalIndex < s_Local.Length; i_LocalIndex++)
                 {
                     bool b_IsOnLocal = false;
                     for (int i_ServerIndex = 1; i_ServerIndex < s_Server.Length; i_ServerIndex++)
                     {
+
                         if (s_Local[i_LocalIndex].s_File == s_Server[i_ServerIndex].s_File)
                         {
                             b_IsOnLocal = true;
@@ -340,6 +321,7 @@ namespace Synker
 
             for (int i_ServerIndex = 1; i_ServerIndex < s_Server.Length; i_ServerIndex++)
             {
+                Thread.Sleep(100);
                 int i_IsOnLocal = -1;
                 if (s_Server.Length != 1)
                 {
@@ -352,32 +334,25 @@ namespace Synker
                         }
                     }
                 }
+
                 if (i_IsOnLocal == -1)
                 {
-                    if (!DownloadFile(s_Server[i_ServerIndex])) return false;
+                    if (!Download(s_Server[i_ServerIndex])) return false;
                 }
                 else if (DateTime.Compare(s_Server[i_ServerIndex].o_Modified, s_Local[i_IsOnLocal].o_Modified) > 0)
                 {
-                    if (!DownloadFile(s_Server[i_IsOnLocal])) return false;
+                    if (!Download(s_Server[i_IsOnLocal])) return false;
                 }
             }
             return true;
         }
-        public static bool Push(out int i_Trys)
-        {
-            for (i_Trys = 1; i_Trys < 3; i_Trys++)
-            {
-                if (ForcePush() == true) return true;
-                Thread.Sleep(500);
-            }
-            return false;
-        }
-        private static bool ForcePush()
+        public static bool Push()
         {
             // Checks if a file is present on local: if false delete it because it is no longer needed
 
             if (s_Server.Length != 1)
             {
+                Thread.Sleep(100);
                 for (int i_ServerIndex = 1; i_ServerIndex < s_Server.Length; i_ServerIndex++)
                 {
                     bool b_IsOnLocal = false;
@@ -400,6 +375,7 @@ namespace Synker
 
             for (int i_LocalIndex = 1; i_LocalIndex < s_Local.Length; i_LocalIndex++)
             {
+                Thread.Sleep(100);
                 int i_IsOnServer = -1;
                 if (s_Server.Length != 1)
                 {
@@ -414,36 +390,164 @@ namespace Synker
                 }
                 if (i_IsOnServer == -1)
                 {
-                    if (!UploadFile(s_Local[i_LocalIndex])) return false;
+                    if (!Upload(s_Local[i_LocalIndex])) return false;
                 }
-                else if (DateTime.Compare(s_Local[i_LocalIndex].o_Modified, s_Server[i_IsOnServer].o_Modified) < 0)
+                else if (DateTime.Compare(s_Local[i_LocalIndex].o_Modified, s_Server[i_IsOnServer].o_Modified) > 0)
                 {
-                    if (!UploadFile(s_Local[i_LocalIndex])) return false;
+                    if (!Upload(s_Local[i_LocalIndex])) return false;
                 }
             }
             return true;
         }
-        public static bool UpdateListing(out int i_Trys)
+        public static bool DeleteLocal(FileObj s_Source)
         {
-            for (i_Trys = 1; i_Trys < 4; i_Trys++)
+            Log("Delete Loacalfile: " + s_Source.s_File, true, false);
+            for (int i_Trys = 1; i_Trys < 4; i_Trys++)
             {
-                if (FetchData() == true) return true;
+                if (Base.DeleteOnLocal(s_Source) == true)
+                {
+                    Log(" ... OKAY", false, true,1);
+                    return true;
+                }
+                Log(" ... A(" + i_Trys + ")", true, true,2);
                 Thread.Sleep(500);
             }
+            Log(" ... FAILED!", false, true,2);
+            Log(LastError.Source + "->" + LastError.GetType() + ":\n" + LastError.StackTrace, false, false, 2);
             return false;
         }
-        private static bool FetchData()
+        public static bool DeleteServer(FileObj s_Source)
         {
-            FileObj[] s_ServerTemp = FetchServer();
-            FileObj[] s_LocalTemp = FetchLocal();
-
-            if (s_LocalTemp != null && s_ServerTemp != null)
+            Log("Delete Serverfile: " + s_Source.s_File, true, false);
+            for (int i_Trys = 1; i_Trys < 4; i_Trys++)
             {
-                s_Local = s_LocalTemp;
-                s_Server = s_ServerTemp;
+                if (Base.DeleteFromServer(s_Source) == true)
+                {
+                    Log(" ... OKAY", false, true,1);
+                    return true;
+                }
+                Log(" ... A(" + i_Trys + ")", true, true,2);
+                Thread.Sleep(500);
+            }
+            Log(" ... FAILED!", false, true,2);
+            Log(LastError.Source + "->" + LastError.GetType() + ":\n" + LastError.StackTrace, false, false, 2);
+
+            return false;
+        }
+        public static bool Download(FileObj s_Source)
+        {
+            Log("Downloading: " + s_Source.s_File, true, false);
+            for (int i_Trys = 1; i_Trys < 4; i_Trys++)
+            {
+                if (Base.DownloadFile(s_Source) == true)
+                {
+                    Log(" ... OKAY", false, true,1);
+                    return true;
+                }
+                Log(" ... A(" + i_Trys + ")", true, true,2);
+                Thread.Sleep(500);
+            }
+            Log(" ... FAILED!", false, true,2);
+            Log(LastError.Source +"->"+LastError.GetType() + ":\n" + LastError.StackTrace, false, false, 2);
+
+            return false;
+        }
+        public static bool Upload(FileObj s_Source)
+        {
+            Log("Uploading: " + s_Source.s_File, true, false);
+            for (int i_Trys = 1; i_Trys < 4; i_Trys++)
+            {
+                if (Base.UploadFile(s_Source) == true)
+                {
+                    Log(" ... OKAY", false, true,1);
+                    return true;
+                }
+                Log(" ... A("+i_Trys+")", true, true,2);
+                Thread.Sleep(500);
+            }
+            Log(" ... FAILED!", false, true,2);
+            Log(LastError.Source + "->" + LastError.GetType() + ":\n" + LastError.StackTrace, false, false, 2);
+
+            return false;
+        }
+        public static bool ForcePull()
+        {
+            Log("Started Downloading.");
+            if (Pull())
+            {
+                Log("Finished Downloading.", false,false,1);
                 return true;
             }
+            Log("Failed Downloading.", false, false, 2);
             return false;
+        }
+
+        public static bool ForcePush()
+        {
+            Log("Started Uploading.");
+            if (Push())
+            {
+                Log("Finished Uploading.", false, false, 1);
+                return true;
+            }
+            Log("Failed Uploading.", false, false, 2);
+            return false;
+        }
+        public static bool UpdateListing()
+        {
+            Log("Started Listing",true,false);
+            for (int i_Trys = 1; i_Trys < 4; i_Trys++)
+            {
+                if (Base.FetchData() == true)
+                {
+                    Log(" ... OKAY", false, true, 1);
+                    return true;
+                }
+                Log(" ... A(" + i_Trys + ")", true, true, 2);
+                Thread.Sleep(500);
+            }
+            Log(" ... FAILED!", false, true, 2);
+            Log(LastError.Source + "->" + LastError.GetType() + ":\n" + LastError.StackTrace, false, false, 2);
+
+            return false;
+        }
+
+        public static void StartSync() => o_Thread.Start();
+        public static void StopSync() => o_Thread.Abort();
+        private static void PushCycle()
+        {
+            Message("Autopush Enabled", "Automatic Synchronization Enabled.", false);
+            while (FTP.Default.connected)
+            {
+                if (Action.Changed)
+                {
+                    if (UpdateListing())
+                    {
+                        if (ForcePush())
+                        {
+                            Message("Push", "Upload was successful!", false);
+                        }
+                        else
+                        {
+                            Message("Push", "Upload failed: " + LastError.GetType(), true);
+                        }
+                    }
+                    else
+                    {
+                        Message("Listing failed ", "Listing failed: " + LastError.GetType(), true);
+                    }
+                    Action.Changed = false;
+                }
+                Thread.Sleep(5 * 60 * 1000);
+            }
+        }
+        private static class Action
+        {
+            public static bool Changed = false;
+            public static void Change(object o_Sender, FileSystemEventArgs o_Args) => Changed = true;
+            public static void Create(object o_Sender, FileSystemEventArgs o_Args) => Changed = true;
+            public static void Delete(object o_Sender, FileSystemEventArgs o_Args) => Changed = true;
+            public static void Rename(object o_Sender, RenamedEventArgs o_Args) => Changed = true;
         }
     }
 }

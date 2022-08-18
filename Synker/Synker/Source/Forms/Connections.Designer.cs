@@ -54,7 +54,6 @@
             this.eSynkerMenu.Icon = ((System.Drawing.Icon)(resources.GetObject("eSynkerMenu.Icon")));
             this.eSynkerMenu.Text = "Synker";
             this.eSynkerMenu.Visible = true;
-            this.eSynkerMenu.MouseClick += new System.Windows.Forms.MouseEventHandler(this.OpenMenu);
             // 
             // eServerInput
             // 
@@ -216,7 +215,7 @@
             this.ePanel.Controls.Add(this.ePasswordInput);
             this.ePanel.Location = new System.Drawing.Point(1, 1);
             this.ePanel.Name = "ePanel";
-            this.ePanel.Size = new System.Drawing.Size(231, 161);
+            this.ePanel.Size = new System.Drawing.Size(231, 160);
             this.ePanel.TabIndex = 13;
             // 
             // Connections

@@ -52,8 +52,7 @@
   </PropertyGroup>
   <PropertyGroup />
   <PropertyGroup>
-    <ApplicationIcon>
-    </ApplicationIcon>
+    <ApplicationIcon>Logo.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <SignManifests>false</SignManifests>
@@ -64,6 +63,7 @@
   <PropertyGroup>
     <GenerateManifests>false</GenerateManifests>
   </PropertyGroup>
+  <PropertyGroup />
   <PropertyGroup>
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
@@ -89,6 +89,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Source\Forms\Loaddialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Source\Forms\Loaddialog.Designer.cs">
+      <DependentUpon>Loaddialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Source\Misc\FTP.cs" />
     <Compile Include="Source\Misc\FTP.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -127,6 +133,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Source\Forms\Installdialog.resx">
       <DependentUpon>Installdialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Source\Forms\Loaddialog.resx">
+      <DependentUpon>Loaddialog.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Source\Misc\packages.config" />
     <None Include="Properties\app.manifest">
@@ -186,6 +195,20 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Okay.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Logo.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="IWshRuntimeLibrary">
+      <Guid>{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
