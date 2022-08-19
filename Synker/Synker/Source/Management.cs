@@ -17,34 +17,22 @@ namespace Synker
     // Responsible for proper folder/file setup
     public static class Management
     {
-
-        public static string Path { get { return "C:\\Users\\" + Environment.UserName + "\\Synker\\"; } }
-        public static string PrePath { get { return "C:\\Users\\" + Environment.UserName; } }
-        public static string Name { get { return "Synker"; } }
-        public static bool FirstTime()
-        {
-            if (Directory.Exists(Path))
-            {
-                return false;
-            }
-            return true;
-        }
         public static bool CreateFolder()
         {
             try
             {
-                DirectoryInfo o_Dir = Directory.CreateDirectory(Path);
+                DirectoryInfo o_Dir = Directory.CreateDirectory(Config.Path);
                 o_Dir.Attributes =  FileAttributes.System;
                 Icon o_Exeico = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
-                using (FileStream o_IcoStream = new FileStream(Path+"ico.ico",FileMode.Create))
+                using (FileStream o_IcoStream = new FileStream(Config.Path + "ico.ico",FileMode.Create))
                 {
                     o_Exeico.Save(o_IcoStream);
                 }
-                FileInfo o_IcoInfo = new FileInfo(Path + "ico.ico");
+                FileInfo o_IcoInfo = new FileInfo(Config.Path + "ico.ico");
                 o_IcoInfo.Attributes = FileAttributes.Hidden | FileAttributes.Archive | FileAttributes.System;
 
-                FileStream o_FStream = System.IO.File.Create(Path + "desktop.ini");
-                FileInfo o_File = new FileInfo(Path + "desktop.ini");
+                FileStream o_FStream = System.IO.File.Create(Config.Path + "desktop.ini");
+                FileInfo o_File = new FileInfo(Config.Path + "desktop.ini");
                 StreamWriter o_ini = new StreamWriter(o_FStream);
                 o_ini.WriteLine("[.ShellClassInfo]");
                 o_ini.WriteLine("IconFile=ico.ico");
@@ -69,7 +57,7 @@ namespace Synker
             {
                 WshShell o_WSHShell = new WshShell();
                 IWshShortcut o_Shortcut = (IWshShortcut)o_WSHShell.CreateShortcut(
-                    Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\" + Management.Name + ".lnk"
+                    Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\" + Config.Name + ".lnk"
                     );
                 o_Shortcut.IconLocation = Application.ExecutablePath;
                 o_Shortcut.TargetPath = Application.ExecutablePath;
@@ -91,12 +79,12 @@ namespace Synker
                 string s_GUID = Assembly.GetExecutingAssembly().GetCustomAttribute<GuidAttribute>().Value.ToUpper();
                 RegistryKey o_User = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Registry64);
                 RegistryKey o_GUID = o_User.CreateSubKey("Software\\Classes\\CLSID\\{" + s_GUID + "}");
-                o_GUID.SetValue("", Name, RegistryValueKind.String);
+                o_GUID.SetValue("", Config.Name, RegistryValueKind.String);
                 o_GUID.SetValue("System.IsPinnedToNameSpaceTree", unchecked((int)0x1), RegistryValueKind.DWord);
                 o_GUID.SetValue("SortOrderIndex", unchecked((int)0x42), RegistryValueKind.DWord);
 
                 RegistryKey o_Temp = o_GUID.CreateSubKey("DefaultIcon");
-                o_Temp.SetValue("", Path + "ico.ico", RegistryValueKind.ExpandString);
+                o_Temp.SetValue("", Config.Path + "ico.ico", RegistryValueKind.ExpandString);
                 o_Temp.Close();
 
                 o_Temp = o_GUID.CreateSubKey("InProcServer32");
@@ -109,7 +97,7 @@ namespace Synker
 
                 o_Temp = o_GUID.CreateSubKey("Instance\\InitPropertyBag");
                 o_Temp.SetValue("Attributes", unchecked((int)0x11), RegistryValueKind.DWord);
-                o_Temp.SetValue("TargetFolderPath", Path, RegistryValueKind.ExpandString);
+                o_Temp.SetValue("TargetFolderPath", Config.Path, RegistryValueKind.ExpandString);
 
                 o_Temp = o_GUID.CreateSubKey("ShellFolder");
                 o_Temp.SetValue("FolderValueFlags", unchecked((int)0x28), RegistryValueKind.DWord);
@@ -119,7 +107,7 @@ namespace Synker
                 o_GUID.Close();
 
                 o_Temp = o_User.CreateSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Desktop\\NameSpace\\{" + s_GUID + "}");
-                o_Temp.SetValue("", Name, RegistryValueKind.String);
+                o_Temp.SetValue("", Config.Name, RegistryValueKind.String);
                 o_Temp.Close();
 
                 o_Temp = o_User.CreateSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\HideDesktopIcons\\NewStartPanel");

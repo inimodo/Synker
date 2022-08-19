@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Principal;
 using System.Threading.Tasks;
@@ -20,19 +21,16 @@ namespace Synker
                 {
                     Application.EnableVisualStyles();
                     Application.SetCompatibleTextRenderingDefault(false);
-                    if (Management.FirstTime())
+                    if (!Config.ReadConfig())
                     {
                         Installdialog o_Installer = new Installdialog();
                         Application.Run(o_Installer);
-                        if (o_Installer.Success)
+                        if (!o_Installer.Success)
                         {
-                            Application.Run(new Connections());
+                            return;
                         }
                     }
-                    else
-                    {
-                        Application.Run(new Connections());
-                    }
+                    Application.Run(new Connections());
                 }
                 else
                 {

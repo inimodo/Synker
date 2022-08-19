@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Universal Computing Systems")]
 [assembly: AssemblyProduct("Synker")]
-[assembly: AssemblyCopyright("Copyright © Universal Computing Systems 2022")]
+[assembly: AssemblyCopyright("Copyright © Universal Computing 2022")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

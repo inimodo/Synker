@@ -23,6 +23,7 @@ namespace Synker
         public Connections()
         {
             InitializeComponent();
+
             Synchronization.Message += Message;
             Synchronization.Log += Logger.Log;
 
@@ -55,7 +56,11 @@ namespace Synker
         }
         private async void ForcePull(object o_Sender, EventArgs o_Args)
         {
-            Logger.Show();
+            Logger.OpenWindow();
+            if (!Synchronization.OpenConnection())
+            {
+                Message("No Connection!", "Cloud not connect: " + Synchronization.LastError.GetType(), true);
+            }
             await Task.Run(() => {
                 if (Synchronization.UpdateListing())
                 {
@@ -73,10 +78,15 @@ namespace Synker
                     Message("Listing failed ", "Listing failed: " + Synchronization.LastError.GetType(), true);
                 }
             });
+            Synchronization.CloseConnection();
         }
         private async void ForcePush(object o_Sender, EventArgs o_Args)
         {
-            Logger.Show();
+            Logger.OpenWindow();
+            if (!Synchronization.OpenConnection())
+            {
+                Message("No Connection!", "Cloud not connect: " + Synchronization.LastError.GetType(), true);
+            }
             await Task.Run(() => {
                 if (Synchronization.UpdateListing())
                 {
@@ -94,6 +104,7 @@ namespace Synker
                     Message("Listing failed ", "Listing failed: " + Synchronization.LastError.GetType(), true);
                 }
             });
+            Synchronization.CloseConnection();
         }
 
         private void Close(object o_Sender, EventArgs o_Args)
@@ -109,10 +120,7 @@ namespace Synker
 
             if (FTP.Default.connected)
             {
-                if (!Synchronization.Initialize())
-                {
-                    Message("No Connection!", "Cloud not connect: " + Synchronization.LastError.GetType(), true);
-                }
+                Synchronization.Initialize();
             }
         }
         private void Message(string s_Title, string s_Message,bool b_isError)
@@ -130,9 +138,9 @@ namespace Synker
             {
                 Credentials.Connect(eServerInput.Text, eUserInput.Text, ePasswordInput.Text);
 
-                if (!Synchronization.Initialize())
+                if (FTP.Default.connected)
                 {
-                    Message("No Connection!", "Cloud not connect: " + Synchronization.LastError.GetType(), true);
+                    Synchronization.Initialize();
                 }
 
                 eConnectionError.Clear();

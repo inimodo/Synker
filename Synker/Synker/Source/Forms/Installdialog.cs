@@ -18,12 +18,29 @@ namespace Synker
         public Installdialog()
         {
             InitializeComponent();
-            this.eInstallpathLabel.Text ="@"+Management.Path;
+            this.ePathTextbox.Text = "C:\\Users\\" + Environment.UserName; 
         }
-
+        private void OpenFolder(object sender, EventArgs e)
+        {
+            FolderBrowserDialog o_Folder = new FolderBrowserDialog();
+            o_Folder.Description = "Select working folder...";
+            o_Folder.ShowNewFolderButton = true;
+            o_Folder.SelectedPath = "C:\\Users\\" + Environment.UserName;
+            if (o_Folder.ShowDialog() == DialogResult.OK)
+            {
+                this.ePathTextbox.Text = o_Folder.SelectedPath;
+            }
+        }
         private void Finish(object sender, EventArgs e)
         {
             b_Success = true;
+            if (!Config.CreateConfig(ePathTextbox.Text))
+            {
+                b_Success = false;
+                MessageBox.Show("Something went wrong whilst creating the config file! Closing", "Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                this.Close();
+                return;
+            }
             if (!Management.CreateFolder())
             {
                 b_Success = false;
@@ -45,7 +62,6 @@ namespace Synker
                     MessageBox.Show("Something went wrong whilst creating the 'Windows Explorer' link! Continuing", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-  
             this.Close();
         }
 

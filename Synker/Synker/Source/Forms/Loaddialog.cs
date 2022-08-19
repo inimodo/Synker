@@ -17,7 +17,6 @@ namespace Synker
         {
             InitializeComponent();
         }
-
         public void OpenWindow()
         {
             eLogTextbox.Text = "";
