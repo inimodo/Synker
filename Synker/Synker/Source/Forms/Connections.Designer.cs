@@ -70,7 +70,7 @@
             // 
             this.eServerLabel.AutoSize = true;
             this.eServerLabel.BackColor = System.Drawing.Color.Transparent;
-            this.eServerLabel.Font = new System.Drawing.Font("Bahnschrift Condensed", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.eServerLabel.Font = new System.Drawing.Font("Bahnschrift Light Condensed", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.eServerLabel.ForeColor = System.Drawing.Color.White;
             this.eServerLabel.Location = new System.Drawing.Point(10, 46);
             this.eServerLabel.Name = "eServerLabel";
@@ -82,7 +82,7 @@
             // 
             this.eUserLabel.AutoSize = true;
             this.eUserLabel.BackColor = System.Drawing.Color.Transparent;
-            this.eUserLabel.Font = new System.Drawing.Font("Bahnschrift Condensed", 11.25F, System.Drawing.FontStyle.Bold);
+            this.eUserLabel.Font = new System.Drawing.Font("Bahnschrift Light Condensed", 11.25F);
             this.eUserLabel.ForeColor = System.Drawing.Color.White;
             this.eUserLabel.Location = new System.Drawing.Point(10, 73);
             this.eUserLabel.Name = "eUserLabel";
@@ -105,7 +105,7 @@
             // 
             this.ePasswordLabel.AutoSize = true;
             this.ePasswordLabel.BackColor = System.Drawing.Color.Transparent;
-            this.ePasswordLabel.Font = new System.Drawing.Font("Bahnschrift Condensed", 11.25F, System.Drawing.FontStyle.Bold);
+            this.ePasswordLabel.Font = new System.Drawing.Font("Bahnschrift Light Condensed", 11.25F);
             this.ePasswordLabel.ForeColor = System.Drawing.Color.White;
             this.ePasswordLabel.Location = new System.Drawing.Point(10, 100);
             this.ePasswordLabel.Name = "ePasswordLabel";

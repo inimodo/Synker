@@ -14,6 +14,8 @@ namespace Synker
     public static class Config
     {
         public static string Name { get => "Synker";  }
+        public static string BackupTemp { get => "synker_temp";  }
+        public static string BackupName { get => "SynkerBackups";  }
         public static string Path { get => s_LoadedPath + "\\Synker\\"; }
         public static string PrePath { get => s_LoadedPath; }
         public static int RetryDelay { get => i_RetryDelay; }

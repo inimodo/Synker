@@ -11,56 +11,110 @@ using System.Net;
 using System.IO;
 using System.Threading;
 
-//Using: https://www.nuget.org/packages/System.Net.FtpClient/1.0.5824.34026
-using System.Net.FtpClient;
+
 
 namespace Synker
 {
     public partial class Connections : Form
     {
-        private ContextMenuStrip o_Menu = new ContextMenuStrip();
         private Loaddialog Logger = new Loaddialog();
+        private ContextMenuStrip o_Menu = new ContextMenuStrip();
+        private ToolStripMenuItem o_BackupList = new ToolStripMenuItem("Backups");
+
         public Connections()
         {
             InitializeComponent();
-
+            InitializeMenu();
             Synchronization.Message += Message;
             Synchronization.Log += Logger.Log;
-
+        }
+        private void InitializeMenu()
+        {         
             eSynkerMenu.ContextMenuStrip = new ContextMenuStrip();
             eSynkerMenu.ContextMenuStrip.Items.Add("Synker", Synker.Properties.Resources.Logo, new EventHandler(Show));
-            eSynkerMenu.ContextMenuStrip.Items.Add("Enable Autopush", Synker.Properties.Resources.Okay1, new EventHandler(AutopushToggle));
+            eSynkerMenu.ContextMenuStrip.Items.Add("Create new Backup", null, new EventHandler(CreateBackup));
+            eSynkerMenu.ContextMenuStrip.Items.Add(o_BackupList);
             eSynkerMenu.ContextMenuStrip.Items.Add("Force Push", Synker.Properties.Resources.Upload1, new EventHandler(ForcePush));
             eSynkerMenu.ContextMenuStrip.Items.Add("Force Pull", Synker.Properties.Resources.Download1, new EventHandler(ForcePull));
             eSynkerMenu.ContextMenuStrip.Items.Add("Close", Synker.Properties.Resources.Quit, new EventHandler(Close));
             eSynkerMenu.ContextMenuStrip.Items[0].Font = new Font(eSynkerMenu.ContextMenuStrip.Items[0].Font, FontStyle.Bold);
-            eSynkerMenu.ContextMenuStrip.Items[4].Font = new Font(eSynkerMenu.ContextMenuStrip.Items[4].Font, FontStyle.Bold);
+            eSynkerMenu.ContextMenuStrip.Items[5].Font = new Font(eSynkerMenu.ContextMenuStrip.Items[4].Font, FontStyle.Bold);
         }
-
-        private bool b_Toggle = false;
-        private void AutopushToggle(object o_Sender, EventArgs o_Args)
+        private  void LoadBackupList()
         {
-            if (b_Toggle)
+            string[] s_Backups;
+            if (Synchronization.ListBackups(out s_Backups))
             {
-                Synchronization.StopSync();
-                b_Toggle = false;
-                eSynkerMenu.ContextMenuStrip.Items[1].Image = Synker.Properties.Resources.Okay1;
-                eSynkerMenu.ContextMenuStrip.Items[1].Text = "Enable Autopush";
-            } else
+                if (s_Backups != null)
+                {
+                    o_BackupList.DropDownItems.Clear();
+                    foreach (string s_Backup in s_Backups)
+                    {
+                        ToolStripMenuItem o_Menu = new ToolStripMenuItem(s_Backup);
+                        o_BackupList.DropDownItems.Add(o_Menu);
+                        o_Menu.DropDownItems.Add("Pull", Synker.Properties.Resources.Download1, new EventHandler(LoadBackup));
+                        o_Menu.DropDownItems.Add("Delete", Synker.Properties.Resources.Quit, new EventHandler(DeleteBackup));
+                    }
+                }
+            }
+            else
             {
-                Synchronization.StartSync();
-                b_Toggle = true;
-                eSynkerMenu.ContextMenuStrip.Items[1].Image = Synker.Properties.Resources.Error1;
-                eSynkerMenu.ContextMenuStrip.Items[1].Text = "Disable Autopush";
+                Message("Backup Listing", "Listing failed: " + Synchronization.LastError.GetType(), true);
             }
         }
+
+        private async void DeleteBackup(object o_Sender, EventArgs o_Args)
+        {
+            string s_Name = (o_Sender as ToolStripMenuItem).OwnerItem.ToString();
+            Logger.OpenWindow();
+            await Task.Run(() =>
+            {
+                if (Synchronization.DeleteBackup(s_Name))
+                {
+                    Message("Deleting Backup", "Backup deletion was successful!", false);
+                }
+                else
+                {
+                    Message("Deleting Backup", "Backup deletion failed: " + Synchronization.LastError.GetType(), true);
+                }
+            });
+            LoadBackupList();
+        }
+        private async void LoadBackup(object o_Sender, EventArgs o_Args)
+        {
+            string s_Name = (o_Sender as ToolStripMenuItem).OwnerItem.ToString();
+            Logger.OpenWindow();
+            await Task.Run(() =>
+            {
+                if (Synchronization.LoadBackup(s_Name))
+                {
+                    Message("Loading Backup", "Backup was loaded successful!", false);
+                }
+                else
+                {
+                    Message("Loading Backup", "Backup loading failed: " + Synchronization.LastError.GetType(), true);
+                }
+            });
+        }
+        private async void CreateBackup(object o_Sender, EventArgs o_Args)
+        {
+            Logger.OpenWindow();
+            await Task.Run(() => {
+                if (Synchronization.CreateBackup())
+                {
+                    Message("Create Backup", "Backup creation was successful!", false);
+                }
+                else
+                {
+                    Message("Create Backup", "Backup creation failed: " + Synchronization.LastError.GetType(), true);
+                }
+            });
+            LoadBackupList();
+        }
+
         private async void ForcePull(object o_Sender, EventArgs o_Args)
         {
             Logger.OpenWindow();
-            if (!Synchronization.OpenConnection())
-            {
-                Message("No Connection!", "Cloud not connect: " + Synchronization.LastError.GetType(), true);
-            }
             await Task.Run(() => {
                 if (Synchronization.UpdateListing())
                 {
@@ -78,15 +132,10 @@ namespace Synker
                     Message("Listing failed ", "Listing failed: " + Synchronization.LastError.GetType(), true);
                 }
             });
-            Synchronization.CloseConnection();
         }
         private async void ForcePush(object o_Sender, EventArgs o_Args)
         {
             Logger.OpenWindow();
-            if (!Synchronization.OpenConnection())
-            {
-                Message("No Connection!", "Cloud not connect: " + Synchronization.LastError.GetType(), true);
-            }
             await Task.Run(() => {
                 if (Synchronization.UpdateListing())
                 {
@@ -104,7 +153,6 @@ namespace Synker
                     Message("Listing failed ", "Listing failed: " + Synchronization.LastError.GetType(), true);
                 }
             });
-            Synchronization.CloseConnection();
         }
 
         private void Close(object o_Sender, EventArgs o_Args)
@@ -117,16 +165,16 @@ namespace Synker
             this.Location = new Point(
                 Screen.PrimaryScreen.WorkingArea.Width - this.Width,
                 Screen.PrimaryScreen.WorkingArea.Height - this.Height);
-
             if (FTP.Default.connected)
             {
-                Synchronization.Initialize();
+                Synchronization.InitializeConnection();
+                LoadBackupList();
             }
         }
         private void Message(string s_Title, string s_Message,bool b_isError)
         {
             if (b_isError) {
-                this.eSynkerMenu.ShowBalloonTip(2000, s_Title, s_Message, ToolTipIcon.Error);
+                this.eSynkerMenu.ShowBalloonTip(1000, s_Title, s_Message, ToolTipIcon.Error);
             }else {
                 this.eSynkerMenu.ShowBalloonTip(1000, s_Title, s_Message, ToolTipIcon.Info);
             }
@@ -140,9 +188,8 @@ namespace Synker
 
                 if (FTP.Default.connected)
                 {
-                    Synchronization.Initialize();
+                    Synchronization.InitializeConnection();
                 }
-
                 eConnectionError.Clear();
                 Display(o_Sender, o_Args);
             }
@@ -167,6 +214,7 @@ namespace Synker
             eConnectionError.Clear();
             if (Credentials.Check())
             {
+
                 eConnectButton.Hide();
                 eDisconnectButton.Show();
 
@@ -198,6 +246,7 @@ namespace Synker
         {
             this.Show();
         }
+
 
     }
 }

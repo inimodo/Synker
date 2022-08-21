@@ -21,6 +21,9 @@ namespace Synker
         {
             eLogTextbox.Text = "";
             this.Show();
+            this.Location = new Point(
+                Screen.PrimaryScreen.WorkingArea.Width - this.Width,
+                Screen.PrimaryScreen.WorkingArea.Height - this.Height);
         }
         private void CloseWindow(object sender, EventArgs e)
         {
