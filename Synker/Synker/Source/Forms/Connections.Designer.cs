@@ -61,7 +61,7 @@
             this.eServerInput.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.eServerInput.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.eServerInput.ForeColor = System.Drawing.Color.White;
-            this.eServerInput.Location = new System.Drawing.Point(72, 44);
+            this.eServerInput.Location = new System.Drawing.Point(70, 42);
             this.eServerInput.Name = "eServerInput";
             this.eServerInput.Size = new System.Drawing.Size(147, 21);
             this.eServerInput.TabIndex = 0;
@@ -72,7 +72,7 @@
             this.eServerLabel.BackColor = System.Drawing.Color.Transparent;
             this.eServerLabel.Font = new System.Drawing.Font("Bahnschrift Light Condensed", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.eServerLabel.ForeColor = System.Drawing.Color.White;
-            this.eServerLabel.Location = new System.Drawing.Point(10, 46);
+            this.eServerLabel.Location = new System.Drawing.Point(8, 44);
             this.eServerLabel.Name = "eServerLabel";
             this.eServerLabel.Size = new System.Drawing.Size(42, 18);
             this.eServerLabel.TabIndex = 1;
@@ -84,7 +84,7 @@
             this.eUserLabel.BackColor = System.Drawing.Color.Transparent;
             this.eUserLabel.Font = new System.Drawing.Font("Bahnschrift Light Condensed", 11.25F);
             this.eUserLabel.ForeColor = System.Drawing.Color.White;
-            this.eUserLabel.Location = new System.Drawing.Point(10, 73);
+            this.eUserLabel.Location = new System.Drawing.Point(8, 71);
             this.eUserLabel.Name = "eUserLabel";
             this.eUserLabel.Size = new System.Drawing.Size(30, 18);
             this.eUserLabel.TabIndex = 3;
@@ -96,7 +96,7 @@
             this.eUserInput.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.eUserInput.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.eUserInput.ForeColor = System.Drawing.Color.White;
-            this.eUserInput.Location = new System.Drawing.Point(72, 71);
+            this.eUserInput.Location = new System.Drawing.Point(70, 69);
             this.eUserInput.Name = "eUserInput";
             this.eUserInput.Size = new System.Drawing.Size(147, 21);
             this.eUserInput.TabIndex = 2;
@@ -107,7 +107,7 @@
             this.ePasswordLabel.BackColor = System.Drawing.Color.Transparent;
             this.ePasswordLabel.Font = new System.Drawing.Font("Bahnschrift Light Condensed", 11.25F);
             this.ePasswordLabel.ForeColor = System.Drawing.Color.White;
-            this.ePasswordLabel.Location = new System.Drawing.Point(10, 100);
+            this.ePasswordLabel.Location = new System.Drawing.Point(8, 98);
             this.ePasswordLabel.Name = "ePasswordLabel";
             this.ePasswordLabel.Size = new System.Drawing.Size(57, 18);
             this.ePasswordLabel.TabIndex = 5;
@@ -119,7 +119,7 @@
             this.ePasswordInput.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.ePasswordInput.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ePasswordInput.ForeColor = System.Drawing.Color.White;
-            this.ePasswordInput.Location = new System.Drawing.Point(72, 98);
+            this.ePasswordInput.Location = new System.Drawing.Point(70, 96);
             this.ePasswordInput.Name = "ePasswordInput";
             this.ePasswordInput.PasswordChar = '*';
             this.ePasswordInput.Size = new System.Drawing.Size(147, 21);
@@ -133,7 +133,7 @@
             this.eConnectButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.eConnectButton.Font = new System.Drawing.Font("Bahnschrift Light Condensed", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.eConnectButton.ForeColor = System.Drawing.Color.White;
-            this.eConnectButton.Location = new System.Drawing.Point(119, 125);
+            this.eConnectButton.Location = new System.Drawing.Point(117, 12);
             this.eConnectButton.Name = "eConnectButton";
             this.eConnectButton.Size = new System.Drawing.Size(100, 24);
             this.eConnectButton.TabIndex = 8;
@@ -147,7 +147,7 @@
             this.eStatusLabel.BackColor = System.Drawing.Color.Transparent;
             this.eStatusLabel.Font = new System.Drawing.Font("Bahnschrift Condensed", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.eStatusLabel.ForeColor = System.Drawing.Color.White;
-            this.eStatusLabel.Location = new System.Drawing.Point(44, 13);
+            this.eStatusLabel.Location = new System.Drawing.Point(42, 11);
             this.eStatusLabel.Name = "eStatusLabel";
             this.eStatusLabel.Size = new System.Drawing.Size(54, 23);
             this.eStatusLabel.TabIndex = 12;
@@ -170,7 +170,7 @@
             this.eLogo.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.eLogo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.eLogo.ForeColor = System.Drawing.Color.Transparent;
-            this.eLogo.Location = new System.Drawing.Point(13, 13);
+            this.eLogo.Location = new System.Drawing.Point(11, 11);
             this.eLogo.Name = "eLogo";
             this.eLogo.Size = new System.Drawing.Size(25, 25);
             this.eLogo.TabIndex = 11;
@@ -192,7 +192,7 @@
             this.eDisconnectButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.eDisconnectButton.Font = new System.Drawing.Font("Bahnschrift Light Condensed", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.eDisconnectButton.ForeColor = System.Drawing.Color.White;
-            this.eDisconnectButton.Location = new System.Drawing.Point(119, 125);
+            this.eDisconnectButton.Location = new System.Drawing.Point(117, 12);
             this.eDisconnectButton.Name = "eDisconnectButton";
             this.eDisconnectButton.Size = new System.Drawing.Size(100, 24);
             this.eDisconnectButton.TabIndex = 8;
@@ -215,7 +215,7 @@
             this.ePanel.Controls.Add(this.ePasswordInput);
             this.ePanel.Location = new System.Drawing.Point(1, 1);
             this.ePanel.Name = "ePanel";
-            this.ePanel.Size = new System.Drawing.Size(231, 160);
+            this.ePanel.Size = new System.Drawing.Size(231, 131);
             this.ePanel.TabIndex = 13;
             // 
             // Connections
@@ -224,7 +224,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(232, 162);
+            this.ClientSize = new System.Drawing.Size(232, 132);
             this.Controls.Add(this.ePanel);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;

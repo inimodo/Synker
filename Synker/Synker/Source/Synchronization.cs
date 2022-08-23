@@ -15,16 +15,18 @@ using System.Net.FtpClient;
 namespace Synker
 {
     public class FileObj {
-        public FileObj(string s_Name,string s_File, DateTime o_Modified,bool b_Folder) {
+        public FileObj(string s_Name,string s_File, DateTime o_Modified,bool b_Folder,long i_Size ) {
             this.s_File = s_File;
             this.b_Folder = b_Folder;
             this.o_Modified = o_Modified;
             this.s_Name = s_Name;
+            this.i_Size = i_Size;
         }
         public bool b_Folder;
         public string s_File;
         public string s_Name;
         public DateTime o_Modified; 
+        public long i_Size; 
     }
     // Responsible for file synchronization
     public static partial class Synchronization
@@ -39,7 +41,7 @@ namespace Synker
 
 
         public static Exception LastError { get => e_Error;  }
-        private static Exception e_Error;
+        private static Exception e_Error = new Exception();
 
 
 
@@ -58,17 +60,6 @@ namespace Synker
             o_Connection.EncryptionMode = FtpEncryptionMode.Explicit;
             o_Connection.SslProtocols = SslProtocols.Default | SslProtocols.Tls11 | SslProtocols.Tls12;
             o_Connection.ValidateCertificate += new FtpSslValidation(OnValidateCertificate);
-
-
-
-            //if (!o_Connection.DirectoryExists(Config.Name))
-            //{
-            //    o_Connection.CreateDirectory(Config.Name);
-            //}
-            //if (!o_Connection.DirectoryExists(Config.BackupName))
-            //{
-            //    o_Connection.CreateDirectory(Config.BackupName);
-            //}
         }
         public static bool OpenConnection()
         {

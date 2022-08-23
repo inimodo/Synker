@@ -19,7 +19,7 @@ namespace Synker
     {
         private Loaddialog Logger = new Loaddialog();
         private ContextMenuStrip o_Menu = new ContextMenuStrip();
-        private ToolStripMenuItem o_BackupList = new ToolStripMenuItem("Backups");
+        private ToolStripMenuItem o_BackupList = new ToolStripMenuItem("Backups", Synker.Properties.Resources.Backup);
 
         public Connections()
         {
@@ -32,7 +32,7 @@ namespace Synker
         {         
             eSynkerMenu.ContextMenuStrip = new ContextMenuStrip();
             eSynkerMenu.ContextMenuStrip.Items.Add("Synker", Synker.Properties.Resources.Logo, new EventHandler(Show));
-            eSynkerMenu.ContextMenuStrip.Items.Add("Create new Backup", null, new EventHandler(CreateBackup));
+            eSynkerMenu.ContextMenuStrip.Items.Add("Create new Backup", Synker.Properties.Resources.BackupAdd, new EventHandler(CreateBackup));
             eSynkerMenu.ContextMenuStrip.Items.Add(o_BackupList);
             eSynkerMenu.ContextMenuStrip.Items.Add("Force Push", Synker.Properties.Resources.Upload1, new EventHandler(ForcePush));
             eSynkerMenu.ContextMenuStrip.Items.Add("Force Pull", Synker.Properties.Resources.Download1, new EventHandler(ForcePull));
@@ -50,7 +50,7 @@ namespace Synker
                     o_BackupList.DropDownItems.Clear();
                     foreach (string s_Backup in s_Backups)
                     {
-                        ToolStripMenuItem o_Menu = new ToolStripMenuItem(s_Backup);
+                        ToolStripMenuItem o_Menu = new ToolStripMenuItem(s_Backup, Synker.Properties.Resources.Backup);
                         o_BackupList.DropDownItems.Add(o_Menu);
                         o_Menu.DropDownItems.Add("Pull", Synker.Properties.Resources.Download1, new EventHandler(LoadBackup));
                         o_Menu.DropDownItems.Add("Delete", Synker.Properties.Resources.Quit, new EventHandler(DeleteBackup));
@@ -66,93 +66,135 @@ namespace Synker
         private async void DeleteBackup(object o_Sender, EventArgs o_Args)
         {
             string s_Name = (o_Sender as ToolStripMenuItem).OwnerItem.ToString();
-            Logger.OpenWindow();
-            await Task.Run(() =>
+            if (AskForConsent("You are about to delete the backup "+s_Name+ ". Data may be lost. Do you want to proceed?"))
             {
-                if (Synchronization.DeleteBackup(s_Name))
+                bool b_Success = false;
+                if (Config.ShowLog) Logger.OpenWindow();
+                await Task.Run(() =>
                 {
-                    Message("Deleting Backup", "Backup deletion was successful!", false);
-                }
-                else
-                {
-                    Message("Deleting Backup", "Backup deletion failed: " + Synchronization.LastError.GetType(), true);
-                }
-            });
-            LoadBackupList();
+                    if (Synchronization.DeleteBackup(s_Name))
+                    {
+                        Message("Deleting Backup", "Backup deletion was successful!", false);
+                        b_Success = true;
+                        Thread.Sleep(1000);
+                    }
+                    else
+                    {
+                        Message("Deleting Backup", "Backup deletion failed: " + Synchronization.LastError.GetType(), true);
+                    }
+                });
+                if (b_Success) Logger.CloseWindow();
+                LoadBackupList();
+            }
         }
         private async void LoadBackup(object o_Sender, EventArgs o_Args)
         {
             string s_Name = (o_Sender as ToolStripMenuItem).OwnerItem.ToString();
-            Logger.OpenWindow();
-            await Task.Run(() =>
+            if (AskForConsent("You are about to load the backup " + s_Name + ". Data may be lost. Do you want to proceed?"))
             {
-                if (Synchronization.LoadBackup(s_Name))
+                bool b_Success = false;
+                if (Config.ShowLog) Logger.OpenWindow();
+                await Task.Run(() =>
                 {
-                    Message("Loading Backup", "Backup was loaded successful!", false);
-                }
-                else
-                {
-                    Message("Loading Backup", "Backup loading failed: " + Synchronization.LastError.GetType(), true);
-                }
-            });
+                    if (Synchronization.LoadBackup(s_Name))
+                    {
+                        Message("Loading Backup", "Backup was loaded successful!", false);
+                        b_Success = true;
+                        Thread.Sleep(1000);
+                    }
+                    else
+                    {
+                        Message("Loading Backup", "Backup loading failed: " + Synchronization.LastError.GetType(), true);
+                    }
+                });
+                if (b_Success) Logger.CloseWindow();
+            }
         }
         private async void CreateBackup(object o_Sender, EventArgs o_Args)
         {
-            Logger.OpenWindow();
-            await Task.Run(() => {
+            bool b_Success = false;
+            if (Config.ShowLog) Logger.OpenWindow();
+            await Task.Run(() =>
+            {
                 if (Synchronization.CreateBackup())
                 {
                     Message("Create Backup", "Backup creation was successful!", false);
+                    b_Success = true;
+                    Thread.Sleep(1000);
                 }
                 else
                 {
                     Message("Create Backup", "Backup creation failed: " + Synchronization.LastError.GetType(), true);
                 }
             });
+            if (b_Success) Logger.CloseWindow();
             LoadBackupList();
         }
 
         private async void ForcePull(object o_Sender, EventArgs o_Args)
         {
-            Logger.OpenWindow();
-            await Task.Run(() => {
-                if (Synchronization.UpdateListing())
+            if (AskForConsent("You are about to pull data from the cloud. Data may be lost. Do you want to proceed?"))
+            {
+                bool b_Success = false;
+                if (Config.ShowLog) Logger.OpenWindow();
+                await Task.Run(() =>
                 {
-                    if (Synchronization.ForcePull())
+                    if (Synchronization.UpdateListing())
                     {
-                        Message("Force Pull", "Download was successful!", false);
+                        if (Synchronization.ForcePull())
+                        {
+                            Message("Force Pull", "Download was successful!", false);
+                            b_Success = true;
+                            Thread.Sleep(1000);
+                        }
+                        else
+                        {
+                            Message("Force Pull failed", "Download failed: " + Synchronization.LastError.GetType(), true);
+                        }
                     }
                     else
                     {
-                        Message("Force Pull failed", "Download failed: " + Synchronization.LastError.GetType(), true);
+                        Message("Listing failed ", "Listing failed: " + Synchronization.LastError.GetType(), true);
                     }
-                }
-                else
-                {
-                    Message("Listing failed ", "Listing failed: " + Synchronization.LastError.GetType(), true);
-                }
-            });
+                });
+                if (b_Success) Logger.CloseWindow();
+            }
         }
         private async void ForcePush(object o_Sender, EventArgs o_Args)
         {
-            Logger.OpenWindow();
-            await Task.Run(() => {
-                if (Synchronization.UpdateListing())
+            if (AskForConsent("You are about to push data into the cloud. Data may be lost. Do you want to proceed?"))
+            {
+                bool b_Success = false;
+                if (Config.ShowLog) Logger.OpenWindow();
+                await Task.Run(() =>
                 {
-                    if (Synchronization.ForcePush())
+                    if (Synchronization.UpdateListing())
                     {
-                        Message("Force Push", "Upload was successful!", false);
+                        if (Synchronization.ForcePush())
+                        {
+                            Message("Force Push", "Upload was successful!", false);
+                            b_Success = true;
+                            Thread.Sleep(1000);
+
+                        }
+                        else
+                        {
+                            Message("Force Push", "Upload failed: " + Synchronization.LastError.GetType(), true);
+                        }
                     }
                     else
                     {
-                        Message("Force Push", "Upload failed: " + Synchronization.LastError.GetType(), true);
+                        Message("Listing failed ", "Listing failed: " + Synchronization.LastError.GetType(), true);
                     }
-                }
-                else
-                {
-                    Message("Listing failed ", "Listing failed: " + Synchronization.LastError.GetType(), true);
-                }
-            });
+                });
+                if (b_Success) Logger.CloseWindow();
+            }
+        }
+
+        private bool AskForConsent(string s_Message)
+        {
+            if (!Config.AskForConsent) return true;
+            return MessageBox.Show(s_Message, "Consent", MessageBoxButtons.YesNo,MessageBoxIcon.Warning) == DialogResult.Yes;
         }
 
         private void Close(object o_Sender, EventArgs o_Args)
@@ -227,12 +269,14 @@ namespace Synker
                 eSynkerMenu.ContextMenuStrip.Items[1].Enabled = true;
                 eSynkerMenu.ContextMenuStrip.Items[2].Enabled = true;
                 eSynkerMenu.ContextMenuStrip.Items[3].Enabled = true;
+                eSynkerMenu.ContextMenuStrip.Items[4].Enabled = true;
             }
             else
             {
                 eSynkerMenu.ContextMenuStrip.Items[1].Enabled = false;
                 eSynkerMenu.ContextMenuStrip.Items[2].Enabled = false;
                 eSynkerMenu.ContextMenuStrip.Items[3].Enabled = false;
+                eSynkerMenu.ContextMenuStrip.Items[4].Enabled = false;
                 eConnectButton.Show();
                 eDisconnectButton.Hide();
             }

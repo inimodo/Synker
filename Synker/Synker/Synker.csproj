@@ -209,6 +209,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Logo.ico" />
+    <None Include="Resources\Backup.ico" />
+    <None Include="Resources\Backup.png" />
+    <None Include="Resources\BackupAdd.png" />
     <Content Include="Source\Lib\UniversalConfig.dll" />
     <None Include="Resources\Winex.PNG" />
   </ItemGroup>

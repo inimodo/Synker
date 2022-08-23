@@ -32,12 +32,21 @@ namespace Synker
             try
             {
                 o_Connection.Connect();
+                if (!o_Connection.DirectoryExists(Config.Name))
+                {
+                    o_Connection.CreateDirectory(Config.Name);
+                }
+                if (!o_Connection.DirectoryExists(Config.BackupName))
+                {
+                    o_Connection.CreateDirectory(Config.BackupName);
+                }
             }
             catch (Exception e_ConnectionError)
             {
                 e_Error = e_ConnectionError;
                 return false;
             }
+
             if (!o_Connection.IsConnected)
             {
                 e_Error = new Exception("No Connection");

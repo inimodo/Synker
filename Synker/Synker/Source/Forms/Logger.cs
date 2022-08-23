@@ -17,6 +17,14 @@ namespace Synker
         {
             InitializeComponent();
         }
+        public void CloseWindow()
+        {
+            try
+            {
+                this.Hide();
+            }
+            catch (Exception) { }
+        }
         public void OpenWindow()
         {
             eLogTextbox.Text = "";
@@ -31,29 +39,32 @@ namespace Synker
         }
         public void Log(string s_Message,bool b_Nobreak = false,bool b_Nodate = false,int i_Status=0)
         {
-            string s_Text = s_Message;
-            if (!b_Nodate)
+            if (Config.ShowLog)
             {
-                DateTime o_Now = DateTime.Now;
-                AppendLog("[" + o_Now.ToLongTimeString() + "." + o_Now.Millisecond + "] ",Color.Yellow);
-            }
-        
-            switch (i_Status)// 0 = Normal, 1 = Okay, 2 = Error
-            {
-                case 0:
-                    AppendLog(s_Text, Color.White);
-                    break;
-                case 1:
-                    AppendLog(s_Text, Color.FromArgb(0,255,0));
-                    break;
-                case 2:
-                    AppendLog(s_Text, Color.FromArgb(255, 0, 0));
-                    break;
-            }
+                string s_Text = s_Message;
+                if (!b_Nodate)
+                {
+                    DateTime o_Now = DateTime.Now;
+                    AppendLog("[" + o_Now.ToLongTimeString() + "." + o_Now.Millisecond + "] ", Color.Yellow);
+                }
 
-            if (!b_Nobreak)
-            {
-                AppendLog("\n",Color.White);
+                switch (i_Status)// 0 = Normal, 1 = Okay, 2 = Error
+                {
+                    case 0:
+                        AppendLog(s_Text, Color.White);
+                        break;
+                    case 1:
+                        AppendLog(s_Text, Color.FromArgb(0, 255, 0));
+                        break;
+                    case 2:
+                        AppendLog(s_Text, Color.FromArgb(255, 0, 0));
+                        break;
+                }
+
+                if (!b_Nobreak)
+                {
+                    AppendLog("\n", Color.White);
+                }
             }
            
         }

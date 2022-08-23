@@ -97,7 +97,7 @@ namespace Synker
                     try
                     {
                         o_DestinyStream = o_Connection.OpenRead(s_Source.s_File.Replace("\\", "/"));
-                        
+
                         o_SourceFile = File.OpenWrite(Config.PrePath + s_Source.s_File);
 
                         o_DestinyStream.CopyTo(o_SourceFile);
@@ -156,12 +156,9 @@ namespace Synker
                         
                         o_SourceFile.Close();
                         o_SourceFile.Dispose();
-
-                        
                     }
                     catch (Exception e_Info)
                     {
-
                         if (o_SourceFile != null)
                         {
                             o_SourceFile.Close();
@@ -172,7 +169,6 @@ namespace Synker
                             o_DestinyStream.Close();
                             o_DestinyStream.Dispose();
                         }
-
                         Console.WriteLine(e_Info);
                         e_Error = e_Info;
                         if (!CloseConnection()) return false;
@@ -185,16 +181,13 @@ namespace Synker
             public static FileObj[] FetchServer()
             {
                 if (!OpenConnection()) return null;
-
                 List<FileObj> s_Files = new List<FileObj>();
-
                 FileObj[] InternalFetch(string s_Folder)
                 {
-                    Console.WriteLine("F: "+s_Folder);
                     List<FileObj> s_InternalFiles = new List<FileObj>();
                     foreach (FtpListItem o_Item in o_Connection.GetListing(s_Folder))
                     {
-                        s_InternalFiles.Add(new FileObj(o_Item.Name,o_Item.FullName.Replace("/", "\\"), o_Item.Modified, o_Item.Type == FtpFileSystemObjectType.Directory));
+                        s_InternalFiles.Add(new FileObj(o_Item.Name,o_Item.FullName.Replace("/", "\\"), o_Item.Modified, o_Item.Type == FtpFileSystemObjectType.Directory, o_Item.Size));
 
                         if (o_Item.Type == FtpFileSystemObjectType.Directory)
                         {
@@ -203,34 +196,29 @@ namespace Synker
                     }
                     return s_InternalFiles.ToArray();
                 }
-
                 try
                 {
                     foreach (FtpListItem o_Item in o_Connection.GetListing())
                     {
                         if (o_Item.Name == Config.Name)
                         {
-                            s_Files.Add(new FileObj("","\\" + o_Item.Name, o_Item.Modified, true));
+                            s_Files.Add(new FileObj("","\\" + o_Item.Name, o_Item.Modified, true,-1));
                         }
                     }
-
                     o_Connection.SetWorkingDirectory(Config.Name);
-
                     foreach (FtpListItem o_Item in o_Connection.GetListing())
                     {
-                        s_Files.Add(new FileObj(o_Item.Name,o_Item.FullName.Replace("/", "\\"), o_Item.Modified, o_Item.Type == FtpFileSystemObjectType.Directory));
+                        s_Files.Add(new FileObj(o_Item.Name,o_Item.FullName.Replace("/", "\\"), o_Item.Modified, o_Item.Type == FtpFileSystemObjectType.Directory,o_Item.Size));
                         if (o_Item.Type == FtpFileSystemObjectType.Directory)
                         {
                             s_Files.AddRange(InternalFetch(o_Item.FullName));
                         }
                     }
-
                     o_Connection.SetWorkingDirectory("../");
                 }
                 catch (Exception e_Info)
                 {
                     Console.WriteLine(e_Info);
-                    Thread.Sleep(1000);
                     if (!CloseConnection()) return null;
                     e_Error = e_Info;
                     return null;
@@ -244,13 +232,20 @@ namespace Synker
                 List<FileObj> o_Files = new List<FileObj>();
 
                 FileInfo o_Info = new FileInfo(Config.Path);
-                o_Files.Add(new FileObj("","\\Synker", o_Info.LastWriteTime, true));
+                o_Files.Add(new FileObj("","\\Synker", o_Info.LastWriteTime, true,-1));
                 for (int i_Index = 0; i_Index < s_Files.Length; i_Index++)
                 {
                     o_Info = new FileInfo(s_Files[i_Index]);
                     if (!o_Info.Attributes.HasFlag(FileAttributes.Hidden))
                     {
-                        o_Files.Add(new FileObj(o_Info.Name,"\\Synker\\" + s_Files[i_Index].Remove(0, Config.Path.Length), o_Info.LastWriteTime, Directory.Exists(s_Files[i_Index])));
+                        if (File.Exists(s_Files[i_Index]))
+                        {
+                            o_Files.Add(new FileObj(o_Info.Name, "\\Synker\\" + s_Files[i_Index].Remove(0, Config.Path.Length), o_Info.LastWriteTime, Directory.Exists(s_Files[i_Index]), o_Info.Length));
+                        }
+                        else if (Directory.Exists(s_Files[i_Index]))
+                        {
+                            o_Files.Add(new FileObj(o_Info.Name, "\\Synker\\" + s_Files[i_Index].Remove(0, Config.Path.Length), o_Info.LastWriteTime, Directory.Exists(s_Files[i_Index]), -1));
+                        }
                     }
                 }
                 return o_Files.ToArray();
@@ -272,7 +267,6 @@ namespace Synker
             public static bool DownloadBackup(string s_Source)
             {
                 if (!OpenConnection()) return false;
-
                 Stream o_SourceFile = null, o_DestinyStream = null;
                 try
                 {
@@ -308,7 +302,6 @@ namespace Synker
                 if (!CloseConnection()) return false;
                 return true;
             }
-
             public static bool UploadBackup(string s_Source)
             {
                 if (!OpenConnection()) return false;
@@ -331,7 +324,6 @@ namespace Synker
                 }
                 catch (Exception e_Info)
                 {
-
                     if (o_SourceFile != null)
                     {
                         o_SourceFile.Close();
@@ -342,7 +334,6 @@ namespace Synker
                         o_DestinyStream.Close();
                         o_DestinyStream.Dispose();
                     }
-
                     Console.WriteLine(e_Info);
                     e_Error = e_Info;
                     if (!CloseConnection()) return false;
@@ -411,6 +402,35 @@ namespace Synker
                 }
                 if (!CloseConnection()) return false;
                 return true;
+            }
+
+            public static bool Validate(out FileObj[] s_Errorfiles)
+            {
+                FileObj[] s_ServerTemp = FetchServer();
+                FileObj[] s_LocalTemp = FetchLocal();
+                List<FileObj> o_Files = new List<FileObj>();
+
+                if (s_LocalTemp != null && s_ServerTemp != null)
+                {
+                    for (int i_IndexServer = 0; i_IndexServer < s_ServerTemp.Length; i_IndexServer++)
+                    {
+                        if (s_ServerTemp[i_IndexServer].b_Folder) continue;
+                        for (int i_IndexLocal = 0; i_IndexLocal < s_LocalTemp.Length; i_IndexLocal++)
+                        {
+                            if (s_LocalTemp[i_IndexLocal].s_File == s_ServerTemp[i_IndexServer].s_File)
+                            {
+                                if (s_LocalTemp[i_IndexLocal].i_Size != s_ServerTemp[i_IndexServer].i_Size)
+                                {
+                                    o_Files.Add(s_LocalTemp[i_IndexLocal]);
+                                }
+                            }
+                        }
+                    }
+                    s_Errorfiles = o_Files.ToArray();
+                    return true;
+                }
+                s_Errorfiles = null;
+                return false;
             }
         }
 

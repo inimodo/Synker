@@ -70,6 +70,19 @@ namespace Synker
             }
             return true;
         }
+        private static bool CorrectionPull()
+        {
+            FileObj[] o_Correction;
+            if (Base.Validate(out o_Correction))
+            {
+                foreach (FileObj o_Item in o_Correction)
+                {
+                    if (!Download(o_Item)) return false;
+                }
+                return true;
+            }
+            else return false;
+        }
         private static bool Push()
         {
             // Checks if a file is present on local: if false delete it because it is no longer needed
@@ -122,6 +135,19 @@ namespace Synker
                 }
             }
             return true;
+        }
+        private static bool CorrectionPush()
+        {
+            FileObj[] o_Correction;
+            if (Base.Validate(out o_Correction))
+            {
+                foreach (FileObj o_Item in o_Correction)
+                {
+                    if (!Upload(o_Item)) return false;
+                }
+                return true;
+            }
+            else return false;
         }
         private static bool DeleteLocal(FileObj s_Source)
         {
@@ -199,10 +225,19 @@ namespace Synker
             Log("Started Downloading.");
             if (Pull())
             {
-                Log("Finished Downloading.", false, false, 1);
+                Log("Validating files.");
+                if (CorrectionPull())
+                {
+                    Log("Finished Downloading.", false, false, 1);
+                }
+                else
+                {
+                    Log("Download finished but file validation failed.", false, false, 2);
+                }
                 return true;
             }
             Log("Failed Downloading.", false, false, 2);
+
             return false;
         }
 
@@ -211,7 +246,15 @@ namespace Synker
             Log("Started Uploading.");
             if (Push())
             {
-                Log("Finished Uploading.", false, false, 1);
+                Log("Validating files.");
+                if (CorrectionPush())
+                {
+                    Log("Finished Uploading.", false, false, 1);
+                }
+                else
+                {
+                    Log("Upload finished but file validation failed.", false, false, 2);
+                }
                 return true;
             }
             Log("Failed Uploading.", false, false, 2);
