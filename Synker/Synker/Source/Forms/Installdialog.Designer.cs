@@ -29,36 +29,20 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Installdialog));
-            this.edesktopicoLabel = new System.Windows.Forms.Label();
             this.eStatusLabel = new System.Windows.Forms.Label();
             this.eLogo = new System.Windows.Forms.Button();
             this.eDesktopicoToggle = new System.Windows.Forms.CheckBox();
             this.eWinexToggle = new System.Windows.Forms.CheckBox();
-            this.eWinexLabel = new System.Windows.Forms.Label();
             this.eDisconnectButton = new System.Windows.Forms.Button();
             this.eLinkLabel = new System.Windows.Forms.LinkLabel();
             this.eHelpLabel = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.ePathButton = new System.Windows.Forms.Button();
             this.ePathTextbox = new System.Windows.Forms.TextBox();
+            this.ePathButton = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
-            // 
-            // edesktopicoLabel
-            // 
-            this.edesktopicoLabel.AutoSize = true;
-            this.edesktopicoLabel.BackColor = System.Drawing.Color.Transparent;
-            this.edesktopicoLabel.Font = new System.Drawing.Font("Bahnschrift Condensed", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.edesktopicoLabel.ForeColor = System.Drawing.Color.White;
-            this.edesktopicoLabel.Location = new System.Drawing.Point(11, 100);
-            this.edesktopicoLabel.Name = "edesktopicoLabel";
-            this.edesktopicoLabel.Size = new System.Drawing.Size(158, 18);
-            this.edesktopicoLabel.TabIndex = 2;
-            this.edesktopicoLabel.Text = "Would you like a Desktop icon?";
             // 
             // eStatusLabel
             // 
@@ -95,7 +79,7 @@
             this.eDesktopicoToggle.CheckState = System.Windows.Forms.CheckState.Checked;
             this.eDesktopicoToggle.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.eDesktopicoToggle.Font = new System.Drawing.Font("Bahnschrift Light Condensed", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.eDesktopicoToggle.Location = new System.Drawing.Point(14, 121);
+            this.eDesktopicoToggle.Location = new System.Drawing.Point(14, 111);
             this.eDesktopicoToggle.Name = "eDesktopicoToggle";
             this.eDesktopicoToggle.Size = new System.Drawing.Size(109, 20);
             this.eDesktopicoToggle.TabIndex = 15;
@@ -109,24 +93,12 @@
             this.eWinexToggle.CheckState = System.Windows.Forms.CheckState.Checked;
             this.eWinexToggle.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.eWinexToggle.Font = new System.Drawing.Font("Bahnschrift Light Condensed", 9.75F);
-            this.eWinexToggle.Location = new System.Drawing.Point(14, 62);
+            this.eWinexToggle.Location = new System.Drawing.Point(14, 85);
             this.eWinexToggle.Name = "eWinexToggle";
             this.eWinexToggle.Size = new System.Drawing.Size(129, 20);
             this.eWinexToggle.TabIndex = 15;
             this.eWinexToggle.Text = "Pin in Windows Explorer";
             this.eWinexToggle.UseVisualStyleBackColor = true;
-            // 
-            // eWinexLabel
-            // 
-            this.eWinexLabel.AutoSize = true;
-            this.eWinexLabel.BackColor = System.Drawing.Color.Transparent;
-            this.eWinexLabel.Font = new System.Drawing.Font("Bahnschrift Condensed", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.eWinexLabel.ForeColor = System.Drawing.Color.White;
-            this.eWinexLabel.Location = new System.Drawing.Point(11, 41);
-            this.eWinexLabel.Name = "eWinexLabel";
-            this.eWinexLabel.Size = new System.Drawing.Size(358, 18);
-            this.eWinexLabel.TabIndex = 2;
-            this.eWinexLabel.Text = "Would you like a pinned quick access folder in your Windows Explorer?";
             // 
             // eDisconnectButton
             // 
@@ -136,7 +108,7 @@
             this.eDisconnectButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.eDisconnectButton.Font = new System.Drawing.Font("Bahnschrift Light Condensed", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.eDisconnectButton.ForeColor = System.Drawing.Color.White;
-            this.eDisconnectButton.Location = new System.Drawing.Point(281, 220);
+            this.eDisconnectButton.Location = new System.Drawing.Point(279, 164);
             this.eDisconnectButton.Name = "eDisconnectButton";
             this.eDisconnectButton.Size = new System.Drawing.Size(100, 24);
             this.eDisconnectButton.TabIndex = 16;
@@ -147,7 +119,7 @@
             // eLinkLabel
             // 
             this.eLinkLabel.AutoSize = true;
-            this.eLinkLabel.Location = new System.Drawing.Point(11, 231);
+            this.eLinkLabel.Location = new System.Drawing.Point(9, 175);
             this.eLinkLabel.Name = "eLinkLabel";
             this.eLinkLabel.Size = new System.Drawing.Size(112, 13);
             this.eLinkLabel.TabIndex = 18;
@@ -161,7 +133,7 @@
             this.eHelpLabel.BackColor = System.Drawing.Color.Transparent;
             this.eHelpLabel.Font = new System.Drawing.Font("Bahnschrift Light Condensed", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.eHelpLabel.ForeColor = System.Drawing.Color.White;
-            this.eHelpLabel.Location = new System.Drawing.Point(11, 217);
+            this.eHelpLabel.Location = new System.Drawing.Point(9, 161);
             this.eHelpLabel.Name = "eHelpLabel";
             this.eHelpLabel.Size = new System.Drawing.Size(92, 14);
             this.eHelpLabel.TabIndex = 19;
@@ -173,12 +145,9 @@
             this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.ePathTextbox);
             this.panel1.Controls.Add(this.ePathButton);
-            this.panel1.Controls.Add(this.pictureBox1);
             this.panel1.Controls.Add(this.eStatusLabel);
             this.panel1.Controls.Add(this.eHelpLabel);
-            this.panel1.Controls.Add(this.edesktopicoLabel);
             this.panel1.Controls.Add(this.eLinkLabel);
-            this.panel1.Controls.Add(this.eWinexLabel);
             this.panel1.Controls.Add(this.eLogo);
             this.panel1.Controls.Add(this.button1);
             this.panel1.Controls.Add(this.eDesktopicoToggle);
@@ -186,34 +155,20 @@
             this.panel1.Controls.Add(this.eWinexToggle);
             this.panel1.Location = new System.Drawing.Point(1, 1);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(400, 255);
+            this.panel1.Size = new System.Drawing.Size(400, 205);
             this.panel1.TabIndex = 20;
             // 
-            // pictureBox1
+            // ePathTextbox
             // 
-            this.pictureBox1.Image = global::Synker.Properties.Resources.Winex;
-            this.pictureBox1.Location = new System.Drawing.Point(207, 62);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(174, 97);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 20;
-            this.pictureBox1.TabStop = false;
-            // 
-            // button1
-            // 
-            this.button1.BackColor = System.Drawing.Color.Transparent;
-            this.button1.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
-            this.button1.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button1.Font = new System.Drawing.Font("Bahnschrift Light Condensed", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.ForeColor = System.Drawing.Color.White;
-            this.button1.Location = new System.Drawing.Point(175, 220);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(100, 24);
-            this.button1.TabIndex = 16;
-            this.button1.Text = "Cancel";
-            this.button1.UseVisualStyleBackColor = false;
-            this.button1.Click += new System.EventHandler(this.Cancel);
+            this.ePathTextbox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(34)))), ((int)(((byte)(36)))));
+            this.ePathTextbox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.ePathTextbox.Font = new System.Drawing.Font("Bahnschrift Light Condensed", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ePathTextbox.ForeColor = System.Drawing.Color.White;
+            this.ePathTextbox.Location = new System.Drawing.Point(14, 58);
+            this.ePathTextbox.Name = "ePathTextbox";
+            this.ePathTextbox.ReadOnly = true;
+            this.ePathTextbox.Size = new System.Drawing.Size(302, 26);
+            this.ePathTextbox.TabIndex = 22;
             // 
             // ePathButton
             // 
@@ -223,44 +178,48 @@
             this.ePathButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ePathButton.Font = new System.Drawing.Font("Bahnschrift Light Condensed", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ePathButton.ForeColor = System.Drawing.Color.White;
-            this.ePathButton.Location = new System.Drawing.Point(324, 180);
+            this.ePathButton.Location = new System.Drawing.Point(322, 58);
             this.ePathButton.Name = "ePathButton";
-            this.ePathButton.Size = new System.Drawing.Size(57, 24);
+            this.ePathButton.Size = new System.Drawing.Size(57, 26);
             this.ePathButton.TabIndex = 21;
             this.ePathButton.Text = "...";
             this.ePathButton.UseVisualStyleBackColor = false;
             this.ePathButton.Click += new System.EventHandler(this.OpenFolder);
             // 
-            // ePathTextbox
+            // button1
             // 
-            this.ePathTextbox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(34)))), ((int)(((byte)(36)))));
-            this.ePathTextbox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.ePathTextbox.Font = new System.Drawing.Font("Bahnschrift Light Condensed", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ePathTextbox.ForeColor = System.Drawing.Color.White;
-            this.ePathTextbox.Location = new System.Drawing.Point(16, 182);
-            this.ePathTextbox.Name = "ePathTextbox";
-            this.ePathTextbox.ReadOnly = true;
-            this.ePathTextbox.Size = new System.Drawing.Size(302, 19);
-            this.ePathTextbox.TabIndex = 22;
+            this.button1.BackColor = System.Drawing.Color.Transparent;
+            this.button1.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Silver;
+            this.button1.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button1.Font = new System.Drawing.Font("Bahnschrift Light Condensed", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button1.ForeColor = System.Drawing.Color.White;
+            this.button1.Location = new System.Drawing.Point(173, 164);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(100, 24);
+            this.button1.TabIndex = 16;
+            this.button1.Text = "Cancel";
+            this.button1.UseVisualStyleBackColor = false;
+            this.button1.Click += new System.EventHandler(this.Cancel);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.BackColor = System.Drawing.Color.Transparent;
-            this.label1.Font = new System.Drawing.Font("Bahnschrift Condensed", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Font = new System.Drawing.Font("Bahnschrift Light Condensed", 9.75F);
             this.label1.ForeColor = System.Drawing.Color.White;
-            this.label1.Location = new System.Drawing.Point(13, 156);
+            this.label1.Location = new System.Drawing.Point(13, 41);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(190, 18);
+            this.label1.Size = new System.Drawing.Size(84, 16);
             this.label1.TabIndex = 23;
-            this.label1.Text = "Where should the working folder be?";
+            this.label1.Text = "Working Directory";
             // 
             // Installdialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(402, 257);
+            this.ClientSize = new System.Drawing.Size(402, 207);
             this.Controls.Add(this.panel1);
             this.ForeColor = System.Drawing.Color.White;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
@@ -270,27 +229,22 @@
             this.TopMost = true;
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
-
-        private System.Windows.Forms.Label edesktopicoLabel;
         private System.Windows.Forms.Label eStatusLabel;
         private System.Windows.Forms.Button eLogo;
         private System.Windows.Forms.CheckBox eDesktopicoToggle;
         private System.Windows.Forms.CheckBox eWinexToggle;
-        private System.Windows.Forms.Label eWinexLabel;
         private System.Windows.Forms.Button eDisconnectButton;
         private System.Windows.Forms.LinkLabel eLinkLabel;
         private System.Windows.Forms.Label eHelpLabel;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox ePathTextbox;
         private System.Windows.Forms.Button ePathButton;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Label label1;
     }
 }

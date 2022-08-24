@@ -13,30 +13,18 @@ namespace Synker
         [STAThread]
         static void Main()
         {
-            using (WindowsIdentity o_thisid = WindowsIdentity.GetCurrent())
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            if (!Config.ReadConfig())
             {
-
-                WindowsPrincipal o_Principal = new WindowsPrincipal(o_thisid);
-                if (o_Principal.IsInRole(WindowsBuiltInRole.Administrator))
+                Installdialog o_Installer = new Installdialog();
+                Application.Run(o_Installer);
+                if (!o_Installer.Success)
                 {
-                    Application.EnableVisualStyles();
-                    Application.SetCompatibleTextRenderingDefault(false);
-                    if (!Config.ReadConfig())
-                    {
-                        Installdialog o_Installer = new Installdialog();
-                        Application.Run(o_Installer);
-                        if (!o_Installer.Success)
-                        {
-                            return;
-                        }
-                    }
-                    Application.Run(new Connections());
-                }
-                else
-                {
-                    MessageBox.Show("Synker needs administrator rights for operation. Please restart as administrator!", "Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
                 }
             }
+            Application.Run(new Connections());
         }
     }
 }

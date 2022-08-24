@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Synker")]
 [assembly: AssemblyDescription("FTP Cloud System")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Universal Computing Systems")]
+[assembly: AssemblyCompany("Universal Computing")]
 [assembly: AssemblyProduct("Synker")]
 [assembly: AssemblyCopyright("Copyright © Universal Computing 2022")]
 [assembly: AssemblyTrademark("")]
